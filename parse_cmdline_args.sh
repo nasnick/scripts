@@ -24,15 +24,17 @@ while [ $NUMBER_OF_FILES -ne 0 ]
   FILE=`ls | grep ^0$INCR.*pgs$`
 
 #Run script
- do /usr/bin/pgScript -h $2 -d process_activity -U postgres -e ansi $FILE 2> $FILE.log
+ do /usr/bin/pgScript -h $2 -d process_activity -U postgres -e ansi $FILE 2>&1 | tee $FILE.log
  sleep 5
 
 #Check for errors in log
 ERROR="$(grep ERROR $FILE.log | wc -l)"
 if [ $ERROR -gt 0 ]; then
-  ERROR_LOG="$(grep ERROR 02-TeamStreetAddress.pgs.log | sed -e 's/^[ \t]*//')"
+  ERROR_LOG="$(grep ERROR $FILE.log | sed -e 's/^[ \t]*//')"
   echo "Error in script. Contact author. Error= '$ERROR_LOG'"
   exit 1
+else
+  echo "No error in log"
 fi
 
 #increment counters
