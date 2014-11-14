@@ -1,5 +1,7 @@
 #Bash examples
 
+#check for a zero byte string
+
 VAR="hello"
 if [ -n "$VAR" ]; then
     echo "VAR is not empty"
