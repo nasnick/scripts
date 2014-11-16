@@ -9,7 +9,7 @@ set -e
 remote_db_env=$RD_OPTION_REMOTE_DB_ENV
 
 #variables
-SCRIPT_PATH="/var/rundeck/projects/RTL-Deployment/rtl-update-scripts"
+SCRIPT_PATH="xxxx"
 RTL_DIR=$SCRIPT_PATH/$1
 INCR=1
 
@@ -24,7 +24,7 @@ while [ $NUMBER_OF_FILES -ne 0 ]
   FILE=`ls | grep ^0$INCR.*pgs$`
 
 #Run script
- do /usr/bin/pgScript -h $2 -d process_activity -U postgres -e ansi $FILE 2>&1 | tee $FILE.log
+ do /usr/bin/pgScript -h $2 -d xxxx_xxxx -U xxxx -e ansi $FILE 2>&1 | tee $FILE.log
  sleep 5
 
 #Check for errors in log
