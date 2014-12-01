@@ -7,7 +7,7 @@ set -e
 #e.g. ./deploy.sh RTL_5_3_0_D124 0001-db-prod-ndc
 
 #variables
-SCRIPT_PATH="/var/rundeck/projects/RTL-Deployment/rtl-update-scripts"
+SCRIPT_PATH="XXXX"
 RTL_DIR=$SCRIPT_PATH/$1
 INCR=1
 DB_ENVIRON=$2
