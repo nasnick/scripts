@@ -1,0 +1,5 @@
+domain corp.b2be.com
+search corp.b2be.com
+nameserver 10.0.8.36
+nameserver 10.0.8.252
+#nameserver 8.8.8.8
