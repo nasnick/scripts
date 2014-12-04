@@ -1,7 +1,7 @@
 #!/bin/bash
 
-orig=(1 2 3 4 5)
-
+orig=(1 2 3 4 5 1)
+incr=1
 printf "%d\n" ${orig[@]}  | sort | uniq -c | awk '{print $2, $1==1?"No match PASS":"match FAIL"}' | grep FAIL
 
 if [ "$?" -eq 0 ]; then 
