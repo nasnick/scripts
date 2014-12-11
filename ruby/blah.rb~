@@ -1,0 +1,27 @@
+a = []
+f = File.open('bacula.txt') do |f|
+  f.lines.each do |line|
+    a << line.split.map()
+
+end
+
+b = []
+f = File.open('webp08.txt') do |f|
+  f.lines.each do |line|
+    a << line.split.map()
+
+puts a.inspect
+puts b.inspect
+
+ end
+end
+
+
+
+#lines = Array.new
+
+#lines= f.each_line {|line|}
+
+#lines.each do |line|
+#  puts line
+#end
