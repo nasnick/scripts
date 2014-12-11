@@ -1,5 +1,5 @@
 @a = []
-f = File.open('bacula.txt') do |f|
+f = File.open('a') do |f|
   f.lines.each do |line|
    #@a << line.split.map()
     @a << line
@@ -8,7 +8,7 @@ f = File.open('bacula.txt') do |f|
   puts "file 1: #{@a.size}"
 end
 @b = []
-f = File.open('unxwebp08.txt') do |f|
+f = File.open('b') do |f|
   f.lines.each do |line|
    #@b << line.split.map()
     @b << line
@@ -18,7 +18,21 @@ f = File.open('unxwebp08.txt') do |f|
  end
   puts "file 2: #{@b.size}"
 end
-puts "Lines in common: #{@intersection.size}"
+puts "lines in common: #{@intersection.size}"
 
 puts "These lines are not common to both:"
 puts @c
+
+#puts @a.inspect
+#puts @b.inspect
+
+
+#lines = Array.new
+
+#lines= f.each_line {|line|}
+
+#lines.each do |line|
+#  puts line
+#end
+#bacula.txt
+#unxwebp08.txt

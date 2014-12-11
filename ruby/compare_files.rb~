@@ -18,7 +18,21 @@ f = File.open('unxwebp08.txt') do |f|
  end
   puts "file 2: #{@b.size}"
 end
-puts "Lines in common: #{@intersection.size}"
+puts "Intersection size: #{@intersection.size}"
 
-puts "These lines are not common to both:"
+puts "These files are not common to both:"
 puts @c
+
+#puts @a.inspect
+#puts @b.inspect
+
+
+#lines = Array.new
+
+#lines= f.each_line {|line|}
+
+#lines.each do |line|
+#  puts line
+#end
+#bacula.txt
+#unxwebp08.txt
