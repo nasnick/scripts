@@ -46,5 +46,3 @@ compressor = TextCompressor.new( text )
 
 unque_word_array = compressor.unique
 word_index = compressor.index
-
-telnet 209.20.94.91 5001 ; telnet 209.20.94.91 8098 ; telnet 209.20.94.91 9231
