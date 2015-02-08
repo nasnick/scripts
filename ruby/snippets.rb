@@ -265,6 +265,7 @@ d
 #   end
 #  end
 # numbers(9,10)
+#########################
 #
 # def numbers(x,y)
 #   case
@@ -273,13 +274,12 @@ d
 #   end
 #  end
 # numbers(9,10) 
-
-    
-  # when (x + 1) >= (y)
+#
+#  when (x + 1) >= (y)
 #     puts "Alright now!"
 #
 #
-#   when (y + 1) == x
+#  when (y + 1) == x
 #     puts "ALRIGHT NOW!"
 #
 #
