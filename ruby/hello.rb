@@ -1,5 +1,5 @@
-#Take a name - lowercase then spit out a greeting
-
+#Practice writing classes based on what has been learned in Pragmatic Studio course.
+#
 class HelloThere
   attr_reader :name, :age
   def initialize(name, age)
