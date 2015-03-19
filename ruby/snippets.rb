@@ -488,3 +488,35 @@ total_points = Hash.new(0)
 
 puts total_points
 puts total_points.values.reduce(:+)
+
+################
+++++++++++++++++
+################
+
+#Figuring out how CSV works
+
+require 'csv'
+CSV.foreach('/Users/nickschofield/studio_game/game/players.csv') do |row|
+  name, health = row
+  puts "#{name.inspect} #{health.inspect}"
+end
+
+################
+++++++++++++++++
+################
+
+numbers = (1..10).to_a
+
+def select(array)
+  kermit = []
+  array.each do |element|
+    kermit << element if yield(element % 2 == 0)
+    end
+    kermit
+  end
+
+puts select(numbers) {|a| a }
+
+################
+++++++++++++++++
+################
