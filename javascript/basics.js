@@ -11,3 +11,13 @@ for (var i = 0; i < coffees.length; i++) {
          };
 
 ###################
+#IF CLAUSE
+##################
+
+var dog = {name: "Rover", weight: 35}; 
+if (dog.weight > 30) {
+alert("WOOF WOOF"); } else {
+alert("woof woof"); }
+}
+
+###################
