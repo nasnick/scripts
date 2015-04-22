@@ -72,7 +72,7 @@ document.write("Life without ice cream isn't the same");
    
 	document.write("Happy Birthday dear " + name + ",<br>");
 	document.write("Happy Birthday to you.<br>");
-	console.log("all passed");*/
+	console.log("all passed");
 
 	var plan1 = {
 		name: "basic",
@@ -99,7 +99,20 @@ document.write("Life without ice cream isn't the same");
 	document.write('<br>' + "here's your random number: " + getRandom());
 	
 	var a = Math.floor(Math.random() * 6);
-	document.write('<br>' + "here's another random number: " + a);
+	document.write('<br>' + "here's another random number: " + a);*/
+
+function bark(name, weight) {
+if (weight > 20) {
+  console.log(name + " says WOOF WOOF");
+ } else {
+  console.log(name + " says woof woof");
+ }
+}
+var dog = prompt("enter the name of your paddlepop: ")
+var weight = prompt("enter the weight of your paddlepop: ")
+bark(dog, weight);
+bark("poodlepants", -1);
+
 </script> 
 </head>
 <body>
