@@ -1,0 +1,259 @@
+<!doctype html> <html lang="en">
+<head> <meta charset="utf-8"> <title>Just a Generic Page</title>
+<script>
+	
+// 	setTimeout(wakeUpUser, 5000);
+// 	function wakeUpUser() {
+// 	alert("Are you going to stare at this boring page forever?");
+// 	}
+// 	var dog = {name: "Rover", weight: 35};
+// 	if (dog.weight > 30) {
+// 	alert("WOOF WOOF");
+// 	} else {
+// 	alert("woof woof");
+// 	}
+// 	var circleRadius = 20;
+// 	var circleArea = Math.PI * (circleRadius * circleRadius);
+// 	alert(circleRadius);
+// 	var count = 5;
+// 		while (count > 0) {
+// 		alert("here we are!", document.write(count));
+// 		count = count - 1;
+// 	}
+// 	var joke = "JS walked into a bar...";
+// 	var toldJoke = false;
+// 	var punchLine = "Better watch out for those semi-colons.";
+// 	var percentage = 20;
+// 	var result;
+// 	if (toldJoke == true) {
+// 		alert(punchline);
+// 	} else {
+// 	alert(joke);
+// 	}
+//
+// 	var zipcode = 98104;
+// 	var joesFavoriteMovie = 'Forbidden Planet';
+// 	var movieTicket = 9;
+// 	if (movieTicket >= 9) {
+// 		alert("Too much!");
+// 	} else {
+// 	alert("We're going to see " + joesFavoriteMovie);
+// }
+//
+// var a = '12345';
+// var b = a.substring(0,2);
+// alert(b);
+//
+// var scoops = 5;
+// while (scoops > 0) {
+// 	document.write("Another scoop!<br>");
+// 	scoops = scoops - 1;
+// }
+// document.write("Life without ice cream isn't the same");
+// 	var one = 1;
+// 	while (one <= 100){
+// 		if (one % 15 == 0) {
+// 			document.write('fizzbuzz' + '<br>');
+// 		} else if (one % 3 == 0){
+// 			document.write('fizz' + '<br>');
+// 		} else if (one % 5 == 0){
+// 			document.write('buzz' + '<br>');
+// 		} else {
+// 		document.write(one + '<br>');
+// 	}
+// 	one++;
+// 	}
+//
+// 	var name = "Joe";
+// 	var i = 0;
+// 	while (i < 2) {
+// 	document.write("Happy Birthday to you.<br>");
+// 	i = i + 1;
+//    }
+//
+// 	document.write("Happy Birthday dear " + name + ",<br>");
+// 	document.write("Happy Birthday to you.<br>");
+// 	console.log("all passed");
+
+	// var plan1 = {
+	// 	name: "basic",
+	// 	price: 3.99,
+	// 	discountMonths: [5,7,3,5],
+	// 	calcAnnual: function(percentIfDisc) {
+	// 		var bestPrice = this.price;
+	// 		var currDate = new Date();
+	// 		var theMo = currDate.getMonth();
+	// 		for (var i = 0; i < this.discountMonths.length; i++)
+	// 		{
+	// 			if (this.discountMonths[i] === theMo) {
+	// 				bestPrice = this.price * percentIfDisc;
+	// 				break;
+	// 			}
+	// 	}
+	// 	return bestPrice * 12;
+	// }
+	// };
+	// var annualPrice = plan1.calcAnnual(.85);
+	// document.write("Here's your bill man: " + annualPrice);
+	
+// 	function getRandom() {return Math.floor(Math.random() * 10); }
+// 	document.write('<br>' + "here's your random number: " + getRandom());
+//
+// 	var a = Math.floor(Math.random() * 6);
+// 	document.write('<br>' + "here's another random number: " + a);
+//
+// 	function clunk(times) {
+// 		var num = times;
+// 		while (num > 0) {
+// 	display("clunk");
+// 	num = num - 1;
+//     }
+// 	}
+//
+// 	function thingamajig(size) {
+// 		var facky = 1;
+// 	clunkCounter = 0;
+// 	if (size == 0) {
+// 	  display("clank");
+// 	} else if (size == 1) {
+// 		display("thunk");
+// 	} else {
+// 	  while (size > 1) {
+// 	    facky = facky * size;
+// 	    size = size - 1;
+// 	 }
+// 	clunk(facky);
+//      }
+// 	}
+// 	function display(output) {
+// 		console.log(output);
+// 		clunkCounter = clunkCounter + 1;
+// 	}
+//
+// 	var clunkCounter = 0;
+// 	thingamajig(4);
+// 	console.log(clunkCounter);
+//
+// 	var balance = 10500;
+// 	var cameraOn = true;
+//
+// 	function steal(balance, amount) {
+//
+// 		cameraOn = false;
+// 	if (amount < balance) {
+// 	balance = balance - amount;
+//
+// }
+// alert(cameraOn);
+// 	return amount;
+// 	cameraOn = true;
+// }
+// 	var amount = steal(balance, 1250);
+// 	alert("Criminal: you stole " + amount + "!");*/
+//
+// 	var products = ["Choo Choo Chocolate", "Icy Mint", "Cake Batter", "Bubblegum"];
+// 	var last = products[0];
+// 	var recent = products[3];
+// 	alert(last);
+// 	alert(recent);
+//
+
+var fiat = { make: "Fiat",
+	model: "500",
+	year: 1957,
+	color: "Medium Blue",
+	passengers: 2,
+	convertible: false,
+	mileage: 88000,
+	state: false,
+	fuel: 0,
+
+  start: function() {
+	  this.state = false;
+	  if (this.fuel == 0) {
+		  alert("No fuel - cannot drive");
+	  } else {
+	  alert("The broomer is turned on.");
+	  this.state = true;
+   }
+  },
+  stop: function() {
+	  this.state = false;
+	  alert("The broomer is turned off.");
+  },
+  drive: function() {
+	if (this.state) {
+		if (this.fuel > 0) {
+		alert("this " + this.make + " is about to go blat.");
+		this.fuel = this.fuel - 1;
+		} else {
+			alert("This " + this.make + " is out of fuel.");
+			this.stop();
+		}
+	}else {
+		alert("Turn the dam thing on");
+	}
+ },
+ addFuel: function(amount) {
+	 this.fuel = this.fuel + amount;
+ }
+};
+
+fiat.start(); 
+fiat.drive(); 
+fiat.addFuel(2); 
+fiat.start(); 
+fiat.drive(); 
+fiat.drive(); 
+fiat.drive(); 
+fiat.stop();
+
+// var song = {
+// 	name: "Walk This Way",
+// 	artist: "Run-D.M.C.", minutes: 4,
+// 	seconds: 3,
+// 	genre: "80s",
+// 	playing: false,
+// play: function() {
+// 	if (this.playing == false) {
+// 	this.playing = true;
+// 	console.log("Playing " + this.name + " by " + this.artist);
+// 	}
+// },
+// pause: function() {
+// 	if (this.playing) {
+// 		playing = false;
+// 		}
+// 	}
+// };
+// song.play();
+// song.pause();
+//
+// for (var prop in song) {
+// 	console.log(prop + ': ' + song[prop]);
+// }
+
+// var eightBall = {
+// 	index: 0,
+// 	advice: ["yes", "no", "maybe", "not a chance"],
+// 	shake: function() {
+// 		this.index = this.index + 1;
+// 	if (this.index >= this.advice.length) {
+// 			this.index = 0;
+// 	}
+// },
+// 	look: function() {
+// 		return this.advice[this.index];
+// 	}
+// };
+// eightBall.shake();
+// console.log(eightBall.look());
+// eightBall.shake();
+// console.log(eightBall.look());
+// eightBall.shake();
+// console.log(eightBall.look());
+</script> 
+</head>
+<body>
+       </body>
+     </html>
