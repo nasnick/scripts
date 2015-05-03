@@ -268,21 +268,34 @@
 	<p id="code12">The oyster owns a fine</p>
 	<script src="newcode.js"></script>
 	<p id="hellojason">yes sir</p> -->
+
 	
 <!doctype html> <html lang="en"> <head>
 <meta charset="utf-8"> <title>Planets</title> 
+<style>
+	p#redplanet {
+		font-size: 2.0em;
+		color: #FF0000;
+	}
+	.redtext {
+		color: green;
+	}
+	</style>
 <script>
 	function init(){
 	var planet = document.getElementById("greenplanet");
 	planet.innerHTML = "Red Alert: hit by phaser fire!"; 
-	 }
+	planet.setAttribute("class", "redtext");
+}
     window.onload = init;
 </script>
    </head>
    <body>
 <h1>Green Planet</h1>
-<p id="greenplanet">All is well</p> <h1>Red Planet</h1>
-<p id="redplanet">Nothing to report</p> <h1>Blue Planet</h1>
+<p id="greenplanet">All is well</p> 
+<h1>Red Planet</h1>
+<p id="redplanet">Nothing to report</p>
+<h1>Blue Planet</h1>
 <p id="blueplanet">All systems A-OK</p>
    </body>
    </html>
