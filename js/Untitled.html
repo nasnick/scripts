@@ -307,15 +307,15 @@
 	// console.log("No way a number equals a string");
 	// }
 	
-	function lieDetectorTest() { 
+	function lieDetectorTest() {
 	var lies = 0;
-	
-   var stolenDiamond = { }; 
+
+	   var stolenDiamond = {};
 		if (stolenDiamond) {
 		console.log("You stole the diamond");
-		lies++; 
+		lies++;
 	}
-	
+
 	// var car = {
 	// 	keysInPocket: null
 	// };
@@ -327,85 +327,119 @@
 	// console.log("You drove the car after you stole it!");
 	// lies++;
 	// }
-	
+
 	var foundYouAtTheCrimeScene = [ ];
 		if (foundYouAtTheCrimeScene) {
 			console.log("A sure sign of guilt");
 			lies++;
 		}
-		
+
 	// if (foundYouAtTheCrimeScene[0]) {
 	// 	console.log("Caught with a stolen item!");
 	// 	lies++;
 	// }
-	
-	var yourName = " "; 
+
+	var yourName = " ";
 		if (yourName) {
 			console.log("Guess you lied about your name");
-			lies++; 
+			lies++;
 	}
-	return lies; 
+	return lies;
 }
 
-	var numberOfLies = lieDetectorTest(); 
-	console.log("You told " + numberOfLies + " lies!"); 
+	var numberOfLies = lieDetectorTest();
+	console.log("You told " + numberOfLies + " lies!");
 		if (numberOfLies >= 3) {
-			console.log("Guilty as charged"); 
+			console.log("Guilty as charged");
 		}
-		
-		// var a = "hello";
-		// if(a === ){
-		// 	console.log(typeof a);
-		// }
-		
-		var input = "jenny@wickedlysmart.com"; 
-		for(var i = 0; i < input.length; i++) {
-		if (input.charAt(i) === "@") {
-		console.log("There's an @ sign at index " + i);
-	} 
-}
-	var phrase = "the cat in the hat";
-	var index = phrase.indexOf("cat");
-		console.log("there's a cat sitting at index " + index);
-		
-		index = phrase.indexOf("the", 5);
-		console.log("there's a the sitting at index " + index);
-		
-		var data = "name|phone|address"; 
-		var val = data.substring(5, 10); 
-		console.log("Substring is " + val);
-		
-		var data = "name|phone|address";
-		var vals = data.split("|"); 
-		console.log("Split array is ", vals);
-		
-		var a = "the people of mars";
-		a.replace("people", "fish");
-		// => "the fish of mars"
+//
+// 		// var a = "hello";
+// 		// if(a === ){
+// 		// 	console.log(typeof a);
+// 		// }
+//
+// 		var input = "jenny@wickedlysmart.com";
+// 		for(var i = 0; i < input.length; i++) {
+// 		if (input.charAt(i) === "@") {
+// 		console.log("There's an @ sign at index " + i);
+// 	}
+// }
+// 	var phrase = "the cat in the hat";
+// 	var index = phrase.indexOf("cat");
+// 		console.log("there's a cat sitting at index " + index);
+//
+// 		index = phrase.indexOf("the", 5);
+// 		console.log("there's a the sitting at index " + index);
+//
+// 		var data = "name|phone|address";
+// 		var val = data.substring(5, 10);
+// 		console.log("Substring is " + val);
+//
+// 		var data = "name|phone|address";
+// 		var vals = data.split("|");
+// 		console.log("Split array is ", vals);
+//
+// 		var a = "the people of mars";
+// 		a.replace("people", "fish");
+// 		// => "the fish of mars"
 
-		function isGood(number){
-			console.log(number.length);
-			console.log(number.indexOf("-"));
-			var zzz = number.substring(0,2);
-			var yyy = number.substring(4);
-			if(number.length === 8 && number.indexOf("-") === 3 &&  !isNaN(zzz) && !isNaN(yyy)){
-					return "number is good";
-				} else if(number.length === 7 && !isNaN(number)) {
-					return "number is good";
-				} else {
-					return "keep trying buddy";
-				}
-			}
-
-	  		var a = '123-4567';
-	  		var b = '1234345';
-			var c = "abc-defg";
-			aaa = isGood(a);
-			bbb = isGood(b);
-			ccc = isGood(c);
-			console.log(aaa);
-			console.log(bbb);
-			console.log(ccc);
+		// function isGood(number){
+		// 	console.log(number.length);
+		// 	console.log(number.indexOf("-"));
+		// 	var split = number.split('-');
+		// 	console.log(split);
+		// 	var zzz = split[0];
+		// 	var yyy = split[0];
+		// 	if(isNaN(zzz) || isNaN(yyy)) {
+		// 		return false;
+		// 	}
+		// 	// var zzz = number.substring(0,2);
+		// 	// var yyy = number.substring(4);
+		// 	if(number.length === 8 && number.indexOf("-") === 3 &&  !isNaN(zzz) && !isNaN(yyy) || number.length === 7 && !isNaN(number)){
+		// 		// 	return "number is good";
+		// 		// } else if(number.length === 7 && !isNaN(number)) {
+		// 			return "number is good";
+		// 		} else {
+		// 			return "keep trying buddy";
+		// 		}
+		// 	}
+		//
+		// 	  		var a = '123-4567';
+		// 	  		var b = '1234342';
+		// 	var c = "abc-defg";
+		// 	aaa = isGood(a);
+		// 	bbb = isGood(b);
+		// 	ccc = isGood(c);
+		// 	console.log(aaa);
+		// 	console.log(bbb);
+		// 	console.log(ccc);
+			
+	// 		function validate(phoneNumber) {
+	// 			if (phoneNumber.length > 8 || phoneNumber.length < 7) {
+	// 		return false;
+	// 	}
+	// 		var first = phoneNumber.substring(0,3);
+	// 		console.log(first);
+	// 		var second = phoneNumber.substring(phoneNumber.length - 5);
+	// 		console.log(second);
+	// 		if (isNaN(first) || isNaN(second)) {
+	// 			return false;
+	// 		}
+	// 		if (phoneNumber.length === 8) {
+	// 			return (phoneNumber.charAt(3) === "-");
+	// 	}
+	// 	return true;
+	// }
+	// var a = validate('123--333');
+	// console.log(a);
+	function Duck(sound) {
+	this.sound = sound;
+	this.quack = function() {console.log(this.sound);}
+	}
+	var toy = new Duck("quack quack"); 
+	toy.quack();
+	console.log(typeof toy); 
+	console.log(toy instanceof Duck);
 	</script>
 </body>
      </html>
