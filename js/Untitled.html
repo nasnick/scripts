@@ -307,14 +307,14 @@
 	// console.log("No way a number equals a string");
 	// }
 	
-	function lieDetectorTest() {
-	var lies = 0;
-
-	   var stolenDiamond = {};
-		if (stolenDiamond) {
-		console.log("You stole the diamond");
-		lies++;
-	}
+	// function lieDetectorTest() {
+	// var lies = 0;
+	//
+	//    var stolenDiamond = {};
+	// 	if (stolenDiamond) {
+	// 	console.log("You stole the diamond");
+	// 	lies++;
+	// }
 
 	// var car = {
 	// 	keysInPocket: null
@@ -328,30 +328,30 @@
 	// lies++;
 	// }
 
-	var foundYouAtTheCrimeScene = [ ];
-		if (foundYouAtTheCrimeScene) {
-			console.log("A sure sign of guilt");
-			lies++;
-		}
-
-	// if (foundYouAtTheCrimeScene[0]) {
-	// 	console.log("Caught with a stolen item!");
-	// 	lies++;
-	// }
-
-	var yourName = " ";
-		if (yourName) {
-			console.log("Guess you lied about your name");
-			lies++;
-	}
-	return lies;
-}
-
-	var numberOfLies = lieDetectorTest();
-	console.log("You told " + numberOfLies + " lies!");
-		if (numberOfLies >= 3) {
-			console.log("Guilty as charged");
-		}
+// 	var foundYouAtTheCrimeScene = [ ];
+// 		if (foundYouAtTheCrimeScene) {
+// 			console.log("A sure sign of guilt");
+// 			lies++;
+// 		}
+//
+// 	// if (foundYouAtTheCrimeScene[0]) {
+// 	// 	console.log("Caught with a stolen item!");
+// 	// 	lies++;
+// 	// }
+//
+// 	var yourName = " ";
+// 		if (yourName) {
+// 			console.log("Guess you lied about your name");
+// 			lies++;
+// 	}
+// 	return lies;
+// }
+//
+// 	var numberOfLies = lieDetectorTest();
+// 	console.log("You told " + numberOfLies + " lies!");
+// 		if (numberOfLies >= 3) {
+// 			console.log("Guilty as charged");
+// 		}
 //
 // 		// var a = "hello";
 // 		// if(a === ){
@@ -432,14 +432,23 @@
 	// }
 	// var a = validate('123--333');
 	// console.log(a);
-	function Duck(sound) {
-	this.sound = sound;
-	this.quack = function() {console.log(this.sound);}
+	// function Duck(sound) {
+	// this.sound = sound;
+	// this.quack = function() {console.log(this.sound);}
+	// }
+	// var toy = new Duck("quack quack");
+	// toy.quack();
+	// console.log(typeof toy);
+	// console.log(toy instanceof Duck);
+	var location1 = Math.floor(Math.random() * 5);
+	var location2 = Math.floor(Math.random() * 5);
+	console.log(location1);
+	ship1 = [];
+	for(var i = 0; i < 3; i++){
+		ship1.push((location1 + i) + String(location2));
 	}
-	var toy = new Duck("quack quack"); 
-	toy.quack();
-	console.log(typeof toy); 
-	console.log(toy instanceof Duck);
+	console.log(ship1);
+
 	</script>
 </body>
      </html>
