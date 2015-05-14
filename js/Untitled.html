@@ -213,7 +213,8 @@
 
 // var song = {
 // 	name: "Walk This Way",
-// 	artist: "Run-D.M.C.", minutes: 4,
+// 	artist: "Run-D.M.C.", 
+// 	minutes: 4,
 // 	seconds: 3,
 // 	genre: "80s",
 // 	playing: false,
@@ -440,15 +441,49 @@
 	// toy.quack();
 	// console.log(typeof toy);
 	// console.log(toy instanceof Duck);
-	var location1 = Math.floor(Math.random() * 5);
-	var location2 = Math.floor(Math.random() * 5);
-	console.log(location1);
-	ship1 = [];
-	for(var i = 0; i < 3; i++){
-		ship1.push((location1 + i) + String(location2));
-	}
-	console.log(ship1);
+	// var location1 = Math.floor(Math.random() * 5);
+	// var location2 = Math.floor(Math.random() * 5);
+	// console.log(location1);
+	// ship1 = [];
+	// ship2 = [];
+	// ship3 = [];
+	// for(var i = 0; i < 3; i++){
+	// 	ship1.push((location1 + i) + String(location2));
+	// 	ship2.push((location1 + i) + String(location2 + 1));
+	// 	ship3.push((location1 + i) + String(location2 + 2));
+	//
+	// }
+	// console.log(ship1);
+	// console.log(ship2);
+	// console.log(ship3);
 
+	var ships = {
+		constant: Math.floor(Math.random() * 6),
+		constantVariable1: Math.floor(Math.random() * 3),
+		constantVariable2: Math.floor(Math.random() * 3),
+		location1: Math.floor(Math.random() * 6),
+		location2: Math.floor(Math.random() * 6),
+		location3: Math.floor(Math.random() * 6),
+		shipLocations: function(){
+			// location1 = this.location + 1;
+			// location2 = this.location + 2;
+			// location3 = this.location + 3;
+			// console.log(location1);
+			// console.log(location2);
+			// console.log(location3);
+			locations = [];
+			for(i =0; i < 3; i++){
+				locations.push(this.constant + String(this.location1 + i));
+				locations.push((this.constant + this.constantVariable1) + String(this.location2 + i));
+				locations.push((this.constant + this.constantVariable2) + String(this.location3 + i));
+				
+			}			
+       console.log(locations);
+		}
+	};
+	ships.shipLocations();
+	
 	</script>
 </body>
      </html>
+	  
