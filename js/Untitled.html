@@ -458,27 +458,16 @@
 	// console.log(ship3);
 
 	var ships = {
-		constant: Math.floor(Math.random() * 6),
-		constantVariable1: Math.floor(Math.random() * 3),
-		constantVariable2: Math.floor(Math.random() * 3),
-		location1: Math.floor(Math.random() * 6),
-		location2: Math.floor(Math.random() * 6),
-		location3: Math.floor(Math.random() * 6),
+		constant1: Math.floor(Math.random() * 6),
+		location1: Math.floor(Math.random() * 5),
 		shipLocations: function(){
-			// location1 = this.location + 1;
-			// location2 = this.location + 2;
-			// location3 = this.location + 3;
-			// console.log(location1);
-			// console.log(location2);
-			// console.log(location3);
 			locations = [];
+			ship1 = [];
 			for(i =0; i < 3; i++){
-				locations.push(this.constant + String(this.location1 + i));
-				locations.push((this.constant + this.constantVariable1) + String(this.location2 + i));
-				locations.push((this.constant + this.constantVariable2) + String(this.location3 + i));
-				
-			}			
-       console.log(locations);
+				ship1.push(this.constant1 + String(this.location1 + i));
+			}
+		 this.locations.push(this.ship1);
+       console.log(this.locations);
 		}
 	};
 	ships.shipLocations();
