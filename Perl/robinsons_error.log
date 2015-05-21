@@ -1,4 +1,4 @@
-[Tue Apr 21 19:14:43 2015] [error] ap_proxy_connect_backend disabling worker for (localhost)
+pr 21 19:14:43 2015] [error] ap_proxy_connect_backend disabling worker for (localhost)
 [Tue Apr 21 19:16:36 2015] [error] (111)Connection refused: proxy: HTTP: attempt to connect to 127.0.0.1:8080 (localhost) failed
 [Tue Apr 21 19:16:36 2015] [error] ap_proxy_connect_backend disabling worker for (localhost)
 [Tue Apr 21 19:17:11 2015] [error] (111)Connection refused: proxy: HTTP: attempt to connect to 127.0.0.1:8080 (localhost) failed
@@ -8,3 +8,4 @@
 [Tue Apr 21 19:17:34 2015] [error] proxy: HTTP: disabled connection for (localhost)
 [Wed Apr 22 10:08:06 2015] [error] [client 10.0.8.101] (70007)The timeout specified has expired: proxy: error reading status line from remote server localhost:8080, referer: http://robinsons.b2be.com/Robinson/orderapprovalfree-login
 [Wed Apr 22 10:08:06 2015] [error] [client 10.0.8.101] proxy: Error reading from remote server returned by /Robinson/orderapprovalfree-auth, referer: http://robinsons.b2be.com/Robinson/orderapprovalfree-login
+
