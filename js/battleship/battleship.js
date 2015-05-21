@@ -13,35 +13,55 @@ var view = {
 		cell.setAttribute("class", "miss");
 	}
 };
-var a = 0;
-var b = 1;
-view.displayHit('0' + 0);
-view.displayMiss(11);
-view.displayMesssge("Is this thing switched on?");
+// var a = 0;
+// var b = 1;
+// view.displayHit('0' + 0);
+// view.displayMiss(11);
+// view.displayMesssge("Is this thing switched on?");
 
-
-var ships = [{ locations: ["31", "41", "51"], hits: ["", "", ""] },
-				 { locations: ["14", "24", "34"], hits: ["", "hit", ""] }, 
-   			 { locations: ["00", "01", "02"], hits: ["hit", "", ""] }];
-				 
-//Finish this code to access the second ship's middle location and print its value with console.log.
-				 
-var ship2 = ships[1];
-var locations = ship2.locations; 
-console.log("Location is " + locations[1]);
-
-//Finish this code to see if the third ship has a hit in its first location:
-
-var ship3 = ships[2]; 
-var hits = ship3.hits[0]; 
-	if (hits === "hit") {
-			console.log("Ouch, hit on third ship at location one"); 
+var model = {
+	boardSize: 7,
+	numShips: 3,
+	shipsSunk: 0,
+	shipLength: 3,
+	ships: [{ locations: ["06", "16", "26"], hits: ["", "", ""] },
+			  { locations: ["24", "34", "44"], hits: ["", "", ""] }, 
+		     { locations: ["10", "11", "12"], hits: ["", "", ""] }],
+	fire: function(guess) {
+	for (var i = 0; i < this.numShips; i++) { 
+		var ship = this.ships[i];
+		var index = ship.locations.indexOf(guess);
+		if (index >= 0){
+			ship.hits[index] === "hit";
+				view.displayHit(guess);
+				view.displayMesssge("HIT!");
+			if (this.isSunk(ship)) {
+				view.displayMesssge("You sank my battleshit!");
+				this.shipsSunk++;
+		     }
+			  return true;
+			}
+		}
+		view.displayMiss(guess);
+		view.displayMesssge("MISS!");
+		return false;
+	},
+	isSunk: function(ship){
+		for (var i = 0; i < this.shipLength; i++){
+			if (ship.hits[i] !== "hit"){
+				return false;
+			}
+		}
+		return true;
 	}
-	
-//Finish this code to hit the first ship at the third location:
-
-var ship1= ships[0]; 
-var hits = ship1.hits; 
-hits[2] = "hit";
-hits[0] = "hit";
-console.log(ship1.hits);
+};
+model.fire("53");
+model.fire("06"); 
+model.fire("16"); 
+model.fire("26");
+model.fire("34"); 
+model.fire("24"); 
+model.fire("44");
+model.fire("12"); 
+model.fire("11"); 
+model.fire("10");
