@@ -15,6 +15,19 @@ angular.module('flapperNews', [])
 
 $scope.posts = posts.posts;
 
+angular.module('flapperNews', ['ui.router'])
+.config([
+	'$stateProvider',
+	'$urlRouterProvider',
+function($stateProvider, $urlRouterProvider ) {
+.state('home', {
+	url: '/home',
+	templateUrl: '/home.html',
+	controller: 'MainCtrl'
+	});
+$urlRouterProvider.otherwise('home');
+])
+
 // [
 // {title: 'post 1', upvotes: 5},
 // {title: 'post 2', upvotes: 2},
