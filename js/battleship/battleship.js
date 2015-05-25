@@ -55,13 +55,38 @@ var model = {
 		return true;
 	}
 };
-model.fire("53");
-model.fire("06"); 
-model.fire("16"); 
-model.fire("26");
-model.fire("34"); 
-model.fire("24"); 
-model.fire("44");
-model.fire("12"); 
-model.fire("11"); 
-model.fire("10");
+
+var controller = { 
+	guesses: 0,
+	processGuess: function(guess) { // more code will go here
+  } 
+};
+
+function parseGuess(guess) {
+	var alphabet = ["A", "B", "c", "D", "E", "F", "G"];
+	if(guess === null || guess.length !== 2){
+		alert("oopsie daysies!");
+	} else {
+		firstChar = guess.charAt(0);
+		row = alphabet.indexOf(firstChar);
+		column = guess.charAt(1);
+		console.log(firstChar);
+		console.log(row);
+		console.log(column);
+		if(isNaN(row) || isNaN(column)) {
+			alert("Oops! No good la!");
+		} else if (row < 0 || row >= model.boardSize ||  column < 0 || column >= model.boardSize) {
+			alert("OOOooh number no good too big or too small!");
+		} else {
+			alert("yoooo goood lah!");
+			return row + column;
+		}
+			
+		}
+		return null;
+}
+console.log(parseGuess("A0")); 
+console.log(parseGuess("B6")); 
+console.log(parseGuess("G3")); 
+console.log(parseGuess("H0")); 
+console.log(parseGuess("A7"));
