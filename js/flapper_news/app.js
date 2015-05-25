@@ -6,6 +6,21 @@ angular.module('flapperNews', [])
   return o;
 }])
 
+angular.module('flapperNews', ['ui.router'])
+.config([
+	'$stateProvider',
+	'$urlRouterProvider',
+function($stateProvider, $urlRouterProvider) {
+
+	$stateProvider
+.state('home', {
+	url: '/home',
+	templateUrl: '/home.html',
+	controller: 'MainCtrl'
+	});
+$urlRouterProvider.otherwise('home');
+}])
+
 angular.module('flapperNews', [])
 .controller('MainCtrl', [
 	'$scope',
@@ -15,18 +30,6 @@ angular.module('flapperNews', [])
 
 $scope.posts = posts.posts;
 
-angular.module('flapperNews', ['ui.router'])
-.config([
-	'$stateProvider',
-	'$urlRouterProvider',
-function($stateProvider, $urlRouterProvider ) {
-.state('home', {
-	url: '/home',
-	templateUrl: '/home.html',
-	controller: 'MainCtrl'
-	});
-$urlRouterProvider.otherwise('home');
-])
 
 // [
 // {title: 'post 1', upvotes: 5},
