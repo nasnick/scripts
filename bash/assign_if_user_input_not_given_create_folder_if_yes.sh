@@ -12,3 +12,13 @@ fi
 
 echo $USER
 echo $TMP_DIR_USER
+
+
+echo "Do you want an outbound folder created (y/n)?"
+read CREATE_OUTBOUND
+
+if [ "$CREATE_OUTBOUND" = "y" ]; then
+  mkdir HERE_IT_IS
+else
+ echo "try again"
+fi
