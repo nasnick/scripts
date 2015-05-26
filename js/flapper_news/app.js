@@ -18,7 +18,7 @@ function($stateProvider, $urlRouterProvider) {
 	templateUrl: '/home.html',
 	controller: 'MainCtrl'
 	});
-$urlRouterProvider.otherwise('home');
+//$urlRouterProvider.otherwise('home');
 }])
 
 angular.module('flapperNews', [])
