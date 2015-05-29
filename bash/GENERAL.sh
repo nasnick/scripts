@@ -38,4 +38,9 @@ if [ "$CREATE_OUTBOUND" = "y" ]; then
 else
  echo "try again"
 fi
+ 
+#find and list full file path:
+find . -type f -ls | grep Ch.*Lab[1-9]$
 
+#Find files that end in either/ or:
+find . -type f \( -name "*.txt" -o -name "*.rog" \)
