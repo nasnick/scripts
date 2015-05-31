@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app>
+<html ng-app='demoApp'>
 <head>
 <title>Using Angular Directives and Data Binding</title>
 </head>
@@ -16,13 +16,17 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
 <script>
-function SimpleController($scope) {
+var demoApp = angular.module('demoApp', []);
+
+var controllers = {};
+controllers.SimpleController =  function ($scope) {
 	$scope.customers = [
-			{ name: 'Rangi Heremai', city: 'Invercargill', worth: 2000 }, 
+			{ name: 'Tan Tanz', city: 'Invercargill', worth: 2000 }, 
 			{ name: 'Flynn Northam', city: 'Hong Kong' }, 
-			{ name: 'Salooo Rakoo', city: 'Figtown' }
+			{ name: 'Saloo Rakoo', city: 'Figtown' }
 			];
-}
+};
+demoApp.controller(controllers);
 </script>
 </body>
 </html>
