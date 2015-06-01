@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html ng-app='demoApp'>
+<head>
+<title>Using Angular Directives and Data Binding</title>
+</head>
+<body>
+<!-- <body ng-init="customers=[{name: 'Rangi Heremai', city: 'Invercargill', worth: '2000'}, {name: 'Flynn Northam', city: 'Hong Kong'}, {name: 'Salooo Rakoo', city: 'Figtown'}]"> -->
+
+<!-- <div ng-controller="SimpleController">
+	Name:
+	<br />
+	<input type="text" ng-model="name" />
+	<br />
+	<ul>
+	<li ng-repeat="cust in customers | filter:name | orderBy:'city'">{{ cust.name }} - {{ cust.city }} - {{ cust.worth | currency }}</li>
+	</ul>
+</div>
+
+<div ng-controller="controller2">
+	Name:
+	<br />
+	<input type="text" ng-model="name" />
+	<br />
+	<ul>
+	<li ng-repeat="cust in customers | filter:name | orderBy:'city'">{{ cust.name }} - {{ cust.city }} - {{ cust.worth | currency }}</li>
+	</ul>
+</div> -->
+<div>
+	<div ng-view=""></div>
+</div>
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+<script>
+var demoApp = angular.module('demoApp', []);
+
+demoApp.config(function ($routeProvider) {
+	$routeProvider
+	.when('/view1',
+	{
+     controller: 'SimpleController',
+     templateUrl: 'View1.html'
+	})
+	.when('/view2',
+		{
+     controller: 'SimpleController',
+     templateUrl: 'View2.html'
+	})
+   .otherwise({redirectTo: '/view1'});
+});
+
+//could add rest call with function($http)
+
+demoApp.factory('simpleFactory', function() {
+	var customers = [
+		{ name: 'Tan Tanz', city: 'Invercargill', worth: 2000 }, 
+		{ name: 'Flynn Northam', city: 'Hong Kong' }, 
+		{ name: 'Saloo Rakoo', city: 'Figtown' }
+	];
+	var factory = {};
+	factory.getCustomers = function() {
+		return customers;
+	};
+	//could have a post fuction tht takes the customers object factory.postCustomers = function(customers) {}
+  return factory;
+});
+
+// var controllers = {};
+// controllers.SimpleController = function ($scope) {
+	demoApp.controller('SimpleController', function ($scope, simpleFactory) {
+	$scope.customers = [];
+
+		init();
+
+		function init() {
+			$scope.customers = simpleFactory.getCustomers();
+		}
+
+		$scope.addCustomer = function() {
+			$scope.customers.push(
+				{ 
+					name: $scope.newCustomer.name, 
+					city: $scope.newCustomer.city,
+					worth: $scope.newCustomer.worth
+				});
+		};	
+});
+
+// controllers.controller2 = function ($scope) {
+// 	$scope.customers = [
+// 			{ name: 'bum bum fatty', city: 'Invercargill', worth: 2000 }, 
+// 			{ name: 'Flynn Northam', city: 'Hong Kong' }, 
+// 			{ name: 'Saloo Rakoo', city: 'Figtown' }
+// 			];
+// };
+
+// demoApp.controller(controllers);
+</script>
+</body>
+</html>
