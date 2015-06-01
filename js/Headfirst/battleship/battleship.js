@@ -1,3 +1,28 @@
+function init() {
+  var fireButton = document.getElementById("fireButton");
+  fireButton.onclick = handleFireButton;
+  var guessInput = document.getElementById("guessInput");
+  guessInput.onkeypress = handleKeyPress;
+}
+
+
+function handleFireButton() {
+	var guessInput = document.getElementById("guessInput");
+	var guess = guessInput.value;
+	controller.processGuess(guess);
+	guessInput.value = "";
+}
+
+function handleKeyPress(e) {
+	var fireButton = document.getElementById("fireButton");
+	if (e.keyCode === 13) {
+		fireButton.click();
+		return false;
+	}
+}
+
+window.onload = init;
+
 
 var view = {
 	displayMesssge: function(msg) {
@@ -24,9 +49,10 @@ var model = {
 	numShips: 3,
 	shipsSunk: 0,
 	shipLength: 3,
-	ships: [{ locations: ["06", "16", "26"], hits: ["", "", ""] },
-			  { locations: ["24", "34", "44"], hits: ["", "", ""] }, 
-		     { locations: ["10", "11", "12"], hits: ["", "", ""] }],
+	// ships: [{ locations: ["06", "16", "26"], hits: ["", "", ""] },
+	// 		  { locations: ["24", "34", "44"], hits: ["", "", ""] }, 
+	// 	     { locations: ["10", "11", "12"], hits: ["", "", ""] }],
+	ships: generateShip,
 	fire: function(guess) {
 	for (var i = 0; i < this.numShips; i++) { 
 		var ship = this.ships[i];
@@ -53,6 +79,30 @@ var model = {
 			}
 		}
 		return true;
+	},
+	generateShipLocations: function(numbShips){
+		for (var i = 0; i < numShips; i++) {
+		zeroOrOne = Math.round(Math.random());
+		generateShip(zeroOrOne);
+		} 
+	},
+	generateShip: function(zeroOrOne) {
+		if(!collision(zeroOrOne)) {
+		for (var i = 0; i < numShips; i++) {
+        	if (zeroOrOne === 1){
+				model.ships.push(locations: [this.constant1 + String(this.location1 + i)], hits: ["", "", ""]);
+        		} else {
+        		model.ships.push(locations: [String(this.location1 + i) + this.constant1], hits: ["", "", ""]);
+        		}
+        	}
+       }
+	},
+	collision: function(zeroOrOne) {
+		for (var i = 0; i < numShips; i++) {
+			if(locations(i) === locations(i + 1) || locations(i) === locations(i + 2) || locations(i + 1) === locations(i + 2));
+			return false;
+		}
+      return true;
 	}
 };
 
@@ -71,7 +121,7 @@ var controller = {
 };
 
 function parseGuess(guess) {
-	var alphabet = ["A", "B", "c", "D", "E", "F", "G"];
+	var alphabet = ["A", "B", "C", "D", "E", "F", "G"];
 	if(guess === null || guess.length !== 2){
 		alert("oopsie daysies!");
 	} else {
@@ -94,26 +144,14 @@ function parseGuess(guess) {
 		return null;
 };
 
-function init(){
-  var fireButton = document.getElementById("fireButton");
-  fireButton.onClick = handleFireButton;
-}
+// Loop for the number of ships we want to create.
 
-function handleFireButton(){
-	var guessInput = document.getElementById("guessInput");
-	var guess = guessInput.value;
-	controller.processGuess(guess);
-	guessInput.value = "";
-}
-window.onload = init;
+// Generate a random direction (vertical or horizontal) for the new ship.
 
-// controller.processGuess("A0");
-// controller.processGuess("A6"); 
-// controller.processGuess("B6"); 
-// controller.processGuess("C6");
-// controller.processGuess("C4"); 
-// controller.processGuess("D4"); 
-// controller.processGuess("E4");
-// controller.processGuess("B0"); 
-// controller.processGuess("B1"); 
-// controller.processGuess("B2");
+// Generate a random location for the new ship.
+
+// Test to see if the new ship's locations collide with any existing ship's locations.
+
+// Add the new ship's locations to the ships array.
+
+
