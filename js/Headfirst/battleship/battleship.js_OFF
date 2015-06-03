@@ -3,6 +3,7 @@ var model = {
 	numShips: 3,
 	shipsSunk: 0,
 	shipLength: 3,
+
 	ships: [{ locations: ["0", "0", "0"], hits: ["", "", ""] },
 			{ locations: ["0", "0", "0"], hits: ["", "", ""] }, 
 		    { locations: ["0", "0", "0"], hits: ["", "", ""] }
@@ -26,14 +27,19 @@ var model = {
 		view.displayMesssge("MISS!");
 		return false;
 	},
+
+
 	isSunk: function(ship){
 		for (var i = 0; i < this.shipLength; i++){
 			if (ship.hits[i] !== "hit"){
+			//Ship 
 				return false;
 			}
 		}
 		return true;
 	},
+
+
 	generateShipLocations: function() {
 		var locations;
 		for(var i = 0; i < this.numShips; i++) {
@@ -67,7 +73,7 @@ var model = {
 		return newShipLocations;
 	},
 	collision: function(locations) {
-		for (var i = 0; i < model.numShips; i++) {
+		for (var i = 0; i < this.numShips; i++) {
 			var ship = model.ships[i];
 			for (var j = 0; j < locations.length; j++) {
 				if (ship.locations.indexOf(locations[j] >= 0)) {
