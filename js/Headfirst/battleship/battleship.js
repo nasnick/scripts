@@ -133,7 +133,7 @@ function parseGuess (guess) {
 		} else if (row < 0 || row >= model.boardSize ||  column < 0 || column >= model.boardSize) {
 			alert("OOOooh number no good too big or too small!");
 		} else {
-			alert("yoooo goood lah!");
+			// alert("yoooo goood lah!");
 			return row + column;
 			}
 			
