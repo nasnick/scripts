@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html ng-app='demoApp'>
+<link rel="shortcut icon" href="http://files.softicons.com/download/system-icons/lozengue-filetype-icons-by-gurato/png/512/HTML.png">
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Corben:bold" rel="stylesheet" type="text/css">
+ <link href="https://fonts.googleapis.com/css?family=Nobile" rel="stylesheet" type="text/css">
+<title>K.F.O. CODING</title>
+</head>
+<style type="custom.css"></style>
+<body>
+<div>
+	<div ng-view=""></div>
+</div>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+<!-- jQuery -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+
+<!-- Firebase -->
+<script src='https://cdn.firebase.com/js/client/2.1.0/firebase.js'></script>
+
+<!-- Firechat -->
+<link rel='stylesheet' href='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.css' />
+<script src='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.js'></script>
+<script>
+var demoApp = angular.module('demoApp', []);
+
+demoApp.config(function ($routeProvider) {
+	$routeProvider
+	.when('/view1',
+	{
+     controller: 'SimpleController',
+     templateUrl: 'View1.html'
+	})
+	.when('/view2',
+		{
+     controller: 'SimpleController',
+     templateUrl: 'View2.html'
+	})
+		.when('/view4',
+	{
+     controller: 'SimpleController',
+     templateUrl: 'View4.html'
+	})
+   .otherwise({redirectTo: '/view1'});
+});
+
+demoApp.factory('simpleFactory', function() {
+	var customers = [
+		{name: 'Oliver Lake', city: 'Hong Kong'},
+	{name: 'Flynn Northam', city: 'Hong Kong'}, 
+	{name: 'George Lipowski', city: 'Hong Kong'}, 
+	{name: 'Anton Kopec', city: 'Hong Kong'},
+	{name: 'Kyan Boddington', city: 'Hong Kong'}
+	];
+	var factory = {};
+	factory.getCustomers = function() {
+		return customers;
+	};
+  return factory;
+});
+
+demoApp.controller('SimpleController', function ($scope, simpleFactory) {
+	$scope.customers = [];
+
+		init();
+
+		function init() {
+			$scope.customers = simpleFactory.getCustomers();
+		}
+
+		$scope.addCustomer = function() {
+			$scope.customers.push(
+				{ 
+					name: $scope.newCustomer.name, 
+					city: $scope.newCustomer.city,
+					worth: $scope.newCustomer.worth
+				});
+		};	
+});
+</script>
+<script>
+// Create a new Firebase reference, and a new instance of the Login client
+var chatRef = new Firebase('https://intense-inferno-6480.firebaseio.com/chat');
+
+function login() {
+  chatRef.authWithOAuthPopup('google', function(error, authData) {
+    if (error) {
+      console.log(error);
+    }
+  });
+}
+
+chatRef.onAuth(function(authData) {
+  // Once authenticated, instantiate Firechat with our user id and user name
+  if (authData) {
+    initChat(authData);
+  }
+});
+</script>
+<a href='#' onclick='login();'>Login with Google</a>
+<script>
+function initChat(authData) {
+  var chat = new FirechatUI(chatRef, document.getElementById('firechat-wrapper'));
+  chat.setUser(authData.uid, authData[authData.provider].displayName);
+}
+</script>
+
+<div id='firechat-wrapper'></div>
+</body>
+</html>
