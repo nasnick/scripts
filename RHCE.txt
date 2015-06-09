@@ -1,0 +1,197 @@
+
+LOGICAL VOLUME MANAGER
+
+Physical Volumes >> Volume Group >> Logical Volumes
+
+Physical Volumme
+
+[root@localhost ~]# pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sda2
+  VG Name               centos
+  PV Size               7.51 GiB / not usable 3.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              1922
+  Free PE               10
+  Allocated PE          1912
+  PV UUID               qZw6wm-o0kt-Fcmq-iajl-NQEP-H95Z-Xi3zjg
+
+
+Logical Volume
+
+
+
+Because LVM is broken into different layers, there needs to be a unit by which to measure each layer. 
+
+LVM has two such units: physical extents and logical extents. 
+
+Physical extents are used when dealing with volume groups, and logical extents, with logical volumes. The logical extents
+always map back to a physical extent
+
+
+
+CREATING A LVM PARTITION
+
+1/ Initialise disk to be used for a phyiscal volume:
+
+[root@localhost ~]# pvcreate /dev/sdb1
+  Physical volume "/dev/sdb1" successfully created
+
+VIEW: 
+
+[root@localhost ~]# pvdisplay /dev/sdb1
+  "/dev/sdb1" is a new physical volume of "2.79 GiB"
+  --- NEW Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name               
+  PV Size               2.79 GiB
+  Allocatable           NO
+  PE Size               0   
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               b8fbTO-FgQa-PFAl-8H0p-hk2e-lWAO-fMcN2C
+
+  2/ Create volume group and add physical disk to it:
+
+  [root@localhost ~]# 
+[root@localhost ~]# vgcreate vg_group01 /dev/sdb1
+  Volume group "vg_group01" successfully created
+
+VIEW:
+
+[root@localhost ~]# vgdisplay -v vg_group01
+    Using volume group(s) on command line.
+  --- Volume group ---
+  VG Name               vg_group01
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  1
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               2.79 GiB
+  PE Size               4.00 MiB
+  Total PE              715
+  Alloc PE / Size       0 / 0   
+  Free  PE / Size       715 / 2.79 GiB
+  VG UUID               ArhzVv-Isra-obOu-Mtz9-3Hx2-YpDS-Se4p2P
+   
+  --- Physical volumes ---
+  PV Name               /dev/sdb1     
+  PV UUID               b8fbTO-FgQa-PFAl-8H0p-hk2e-lWAO-fMcN2C
+  PV Status             allocatable
+  Total PE / Free PE    715 / 715
+
+  Physical volumes are broken down into physical extents - 4MB by default.
+
+
+
+3/ Create logical volume
+
+[root@localhost ~]# lvcreate -L 2790 vg_group01
+  Rounding up size to full physical extent 2.73 GiB
+  Logical volume "lvol0" created.
+
+VIEW:
+
+[root@localhost ~]# lvdisplay vg_group01
+  --- Logical volume ---
+  LV Path                /dev/vg_group01/lvol0
+  LV Name                lvol0
+  VG Name                vg_group01
+  LV UUID                lZwM2Y-TxI0-43Ib-7Slx-4ot4-aVNk-CfaCd9
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2015-06-09 18:27:22 +1200
+  LV Status              available
+  # open                 0
+  LV Size                2.73 GiB
+  Current LE             698
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+
+==============================================================
+See PHYSICAL >> VOLUME >> LOGICAL
+
+**See dem physical extents down the bottom?
+
+[root@localhost ~]# vgdisplay -v vg_group01
+    Using volume group(s) on command line.
+  --- Volume group ---
+  VG Name               vg_group01
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               2.79 GiB
+  PE Size               4.00 MiB
+  Total PE              715
+  Alloc PE / Size       698 / 2.73 GiB
+  Free  PE / Size       17 / 68.00 MiB
+  VG UUID               ArhzVv-Isra-obOu-Mtz9-3Hx2-YpDS-Se4p2P
+   
+  --- Logical volume ---
+  LV Path                /dev/vg_group01/lvol0
+  LV Name                lvol0
+  VG Name                vg_group01
+  LV UUID                lZwM2Y-TxI0-43Ib-7Slx-4ot4-aVNk-CfaCd9
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2015-06-09 18:27:22 +1200
+  LV Status              available
+  # open                 0
+  LV Size                2.73 GiB
+  Current LE             698
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+   
+  --- Physical volumes ---
+  PV Name               /dev/sdb1     
+  PV UUID               b8fbTO-FgQa-PFAl-8H0p-hk2e-lWAO-fMcN2C
+  PV Status             allocatable
+  Total PE / Free PE    715 / 17
+
+Here's where it lives:
+
+  [root@localhost ~]# ls -ltr /dev | grep vg
+  crw-------. 1 root root     10,  63 Jun  9 17:49 vga_arbiter
+  drwxr-xr-x. 2 root root          60 Jun  9 18:27 vg_group01
+
+RENAME DAT thang:
+
+[root@localhost ~]# lvrename /dev/vg_group01/lvol0 /dev/vg_group01/SecretSanta
+  Renamed "lvol0" to "SecretSanta" in volume group "vg_group01"
+
+  [root@localhost ~]# ls -ltr /dev/vg_group01/
+  total 0
+  lrwxrwxrwx. 1 root root 7 Jun  9 18:36 SecretSanta -> ../dm-2
+
+  Rename all in one golden stroke ya'll:
+
+  [root@localhost ~]# lvrename /dev/vg_group01/lvol0 /dev/vg_group01/SecretSanta
+  Renamed "lvol0" to "SecretSanta" in volume group "vg_group01"
+
+
+
+
+
