@@ -1,0 +1,78 @@
+<div class="container">
+	<link rel="shortcut icon" href="https://truthman30.files.wordpress.com/2015/04/hello-picture.gif">
+	<center>
+<head>
+	<title>K.F.O. CODING</title>
+</head>
+<style>
+h1, h2, h3, h4, h5, h6, title {
+    font-family: 'Corben', Georgia, Times, serif;
+}
+p, div {
+    font-family: 'Nobile', Helvetica, Arial, sans-serif;
+}
+</style>
+<h2 style="color:green">Welcome To K.F.O</h2>
+<br/>
+<img src="http://media.giphy.com/media/cpIvoQSU8vC9O/giphy.gif">
+<br/>
+  <p style="color:green">This Website is about codes
+<p style="color:green">We Teach HTML and we know awsome codes!<p>
+
+
+<script>
+// Create a new Firebase reference, and a new instance of the Login client
+var chatRef = new Firebase('https://intense-inferno-6480.firebaseio.com/chat');
+
+function login() {
+  chatRef.authWithOAuthPopup('google', function(error, authData) {
+    if (error) {
+      console.log(error);
+    }
+  });
+}
+
+chatRef.onAuth(function(authData) {
+  // Once authenticated, instantiate Firechat with our user id and user name
+  if (authData) {
+    initChat(authData);
+  }
+});
+</script>
+<a href='#' onclick='login();'>ENTER K.F.O. CHATROOM</a>
+<script>
+function initChat(authData) {
+  var chat = new FirechatUI(chatRef, document.getElementById('firechat-wrapper'));
+  chat.setUser(authData.uid, authData[authData.provider].displayName);
+}
+</script>
+
+<div id='firechat-wrapper'></div>
+
+<br/>
+	<h2>K.F.O. Friend Search</h2>
+	Name:
+	<br />
+	<input type="text" ng-model="name" />
+	<br />
+	<ul>
+<li ng-repeat="cust in customers | filter:name | orderBy:'city'">{{ cust.name }} - {{ cust.city }} {{ "-" + cust.worth | currency }}</li>
+	</ul>
+	<br />
+	Customer Name:<br />
+	<input type="text" ng-model="newCustomer.name" />
+	<br />
+	Customer City:<br />
+	<input type="text" ng-model="newCustomer.city" />
+	<br />
+	Customer Worth:<br />
+	<input type="text" ng-model="newCustomer.worth" />
+	<br />
+	<button ng-click="addCustomer()">Add Customer</button>
+	<br />
+	<br />
+	<!-- <a href="#/view2">View 2</a> -->
+	<br />
+	<!-- <a href="#/view4">Flynn's Good Times</a> -->
+	</center>
+</div>

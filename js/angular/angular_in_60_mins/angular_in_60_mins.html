@@ -72,9 +72,10 @@ demoApp.factory('simpleFactory', function() {
 		init();
 
 		function init() {
+			//call the instance of the factory 'simpleFactory' and the factory method 'getCustomers' to retrieve objects in factory array.
 			$scope.customers = simpleFactory.getCustomers();
 		}
-
+//scope is the glue between model and view. addCustomer() defined in View1 and bound to ng-click. Dynamically pushes new items to customers array above. e.g. newCustomer.name defined as ng-model in View1.
 		$scope.addCustomer = function() {
 			$scope.customers.push(
 				{ 
