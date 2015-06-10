@@ -2,7 +2,7 @@ var myApp = angular.module('myApp', []);
 
 myApp.controller('MyController', function MyController($scope, $http) {
 //create an object
-$http.get('js/data.json').success(function() {
+$http.get('js/data.json').success(function(data) {
   $scope.artists = data;
   });
 });
