@@ -3,6 +3,13 @@ LOGICAL VOLUME MANAGER
 
 Physical Volumes >> Volume Group >> Logical Volumes
 
+/dev/sdb1        >> vg_group01   >> secretSanta
+  
+                    Physical         Logical
+                    extents          extents
+
+Physical Extents = YOUR DATA
+
 Physical Volumme
 
 [root@localhost ~]# pvdisplay
@@ -20,11 +27,7 @@ Physical Volumme
 
 Logical Volume
 
-
-
-Because LVM is broken into different layers, there needs to be a unit by which to measure each layer. 
-
-LVM has two such units: physical extents and logical extents. 
+LVM has two units: physical extents and logical extents. 
 
 Physical extents are used when dealing with volume groups, and logical extents, with logical volumes. The logical extents
 always map back to a physical extent
@@ -32,7 +35,7 @@ always map back to a physical extent
 
 
 CREATING A LVM PARTITION
-
+__________________________________________________________________
 1/ Initialise disk to be used for a phyiscal volume:
 
 [root@localhost ~]# pvcreate /dev/sdb1
@@ -53,6 +56,7 @@ VIEW:
   Allocated PE          0
   PV UUID               b8fbTO-FgQa-PFAl-8H0p-hk2e-lWAO-fMcN2C
 
+__________________________________________________________________
   2/ Create volume group and add physical disk to it:
 
   [root@localhost ~]# 
@@ -93,13 +97,14 @@ VIEW:
   Physical volumes are broken down into physical extents - 4MB by default.
 
 
-
+__________________________________________________________________
 3/ Create logical volume
 
 [root@localhost ~]# lvcreate -L 2790 vg_group01
   Rounding up size to full physical extent 2.73 GiB
   Logical volume "lvol0" created.
 
+==========================================================================================
 VIEW:
 
 [root@localhost ~]# lvdisplay vg_group01
@@ -120,7 +125,7 @@ VIEW:
   - currently set to     8192
   Block device           253:2
 
-==============================================================
+__________________________________________________________________
 See PHYSICAL >> VOLUME >> LOGICAL
 
 **See dem physical extents down the bottom?
@@ -177,14 +182,8 @@ Here's where it lives:
   crw-------. 1 root root     10,  63 Jun  9 17:49 vga_arbiter
   drwxr-xr-x. 2 root root          60 Jun  9 18:27 vg_group01
 
+=================================================================================
 RENAME DAT thang:
-
-[root@localhost ~]# lvrename /dev/vg_group01/lvol0 /dev/vg_group01/SecretSanta
-  Renamed "lvol0" to "SecretSanta" in volume group "vg_group01"
-
-  [root@localhost ~]# ls -ltr /dev/vg_group01/
-  total 0
-  lrwxrwxrwx. 1 root root 7 Jun  9 18:36 SecretSanta -> ../dm-2
 
   Rename all in one golden stroke ya'll:
 
@@ -192,6 +191,135 @@ RENAME DAT thang:
   Renamed "lvol0" to "SecretSanta" in volume group "vg_group01"
 
 
+[root@localhost ~]# lvdisplay vg_group01
+  --- Logical volume ---
+  LV Path                /dev/vg_group01/SecretSanta
+
+=================================================================================
+RESIZE THAT THiNG
+
+When you resize a logical volume that already contains a formatted file system, you
+need to grow the file system into the new space that becomes available
+__________________________________________________________________
+Resize dat sucker to be smaller:
+
+[root@localhost ~]# lvresize -L 2000 /dev/vg_group01/SecretSanta
+  WARNING: Reducing active logical volume to 1.95 GiB
+  THIS MAY DESTROY YOUR DATA (filesystem etc.)
+Do you really want to reduce SecretSanta? [y/n]: y
+
+  Size of logical volume vg_group01/SecretSanta changed from 2.73 GiB (698 extents) to 1.95 GiB (500 extents).
+  Logical volume SecretSanta successfully resized
+
+_________________________________________________________________
+  Chuck a few extra extends on dere:
+
+  [root@localhost ~]# lvextend -L +200 /dev/vg_group01/SecretSanta 
+  Size of logical volume vg_group01/SecretSanta changed from 1.95 GiB (500 extents) to 2.15 GiB (550 extents).
+  Logical volume SecretSanta successfully resized
+
+=================================================================================
+ADD ANOTHER PHYSICAL VOLUME TO EXTEND VOLUME GROUP
+
+[root@localhost ~]# pvcreate /dev/sdb2
+  Physical volume "/dev/sdb2" successfully created
+
+_________________________________________________________________
+Chuck it in the volume group:
+
+[root@localhost ~]# vgextend vg_group01 /dev/sdb2
+  Volume group "vg_group01" successfully extended
+
+_________________________________________________________________
+Now we getting somewhere - look at the bottom:
+
+(also   VG Size               6.00 GiB)
+
+[root@localhost ~]# vgdisplay -v vg_group01 
+    Using volume group(s) on command line.
+  --- Volume group ---
+  VG Name               vg_group01
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  6
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               0
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               6.00 GiB
+  PE Size               4.00 MiB
+  Total PE              1535
+  Alloc PE / Size       550 / 2.15 GiB
+  Free  PE / Size       985 / 3.85 GiB
+  VG UUID               ArhzVv-Isra-obOu-Mtz9-3Hx2-YpDS-Se4p2P
+   
+  --- Logical volume ---
+  LV Path                /dev/vg_group01/SecretSanta
+  LV Name                SecretSanta
+  VG Name                vg_group01
+  LV UUID                lZwM2Y-TxI0-43Ib-7Slx-4ot4-aVNk-CfaCd9
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2015-06-09 18:27:22 +1200
+  LV Status              available
+  # open                 0
+  LV Size                2.15 GiB
+  Current LE             550
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+   
+  --- Physical volumes ---
+  PV Name               /dev/sdb1     
+  PV UUID               b8fbTO-FgQa-PFAl-8H0p-hk2e-lWAO-fMcN2C
+  PV Status             allocatable
+  Total PE / Free PE    715 / 165
+   
+  PV Name               /dev/sdb2     
+  PV UUID               e9VSlX-dDVz-yd1p-mdBR-OZeJ-9hzJ-zp2fyw
+  PV Status             allocatable
+  Total PE / Free PE    820 / 820
+
+
+_________________________________________________________________
+lvresize/ lvreduce
+
+lvresize -L 2000 /dev/sdb1/secretSanta
+
+_________________________________________________________________
+Remove the Disk That was added to volume group
+
+vgreduce vg_group01 /dev/sdb2
+
+=================================================================================
+
+MIGRATING DATA
+
+Physical Extents = YOUR DATA
+
+So we have:
+
+[root@localhost ~]# tree /dev/vg_group01/
+/dev/vg_group01/
+└── SecretSanta -> ../dm-2
+
+with /dev/sdb1 and /dev/sdb2 added.. 
+
+Can copy from one to the other with pvmove command so if /dev/sdb2 is dying:
+
+pvmove /dev/sdb1 /dev/sdb2
+
+
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1     5859375     2929687+  83  Linux
+/dev/sdb2         5859376    12582911     3361768   83  Linux
 
 
 
