@@ -8,22 +8,35 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<!-- All of the following under controller "MyController"  -->
 <div class="main" ng-controller="MyController">
+	<!-- Nothing but styling here -->
 	<div class="search">
 <h1>Artist Directory</h1>
 <label>Search: </label>
+<!-- Main box defined with placeholder text -->
 <input ng-model="query" placeholder="search for artists" autofocus>
 <label class="formgroup">by:
-	<select ng-model="artistOrder">
-<option value="name">Name</option> 
-<option value="reknown">Reknown</option>
+
+<!-- name and reknown are nested in the model 'artistOrder' which are then nested in ng-repeat orderBy:artistOrder:direction below. 'direction' defined below	 -->
+
+<!-- 'name' and 'reknown' must be picked up here by value=''  -->
+<select ng-model="artistOrder">
+	<option value="name">Name</option> 
+	<option value="reknown">Reknown</option>
 </select>
+
+<!-- formgroup' is for styling only. value="reverse" and 'checked' only parts of logic here  -->
 </label>
 <label class="formgroup">
 	<input type="radio" ng-model="direction" name="direction" checked>
-	<input type="radio" ng-model="direction" name="direction" value="reverse">
-	<input >
+	ascending
 </label>
+<label class="formgroup">
+	<input type="radio" ng-model="direction" name="direction" value="reverse">
+	descending
+</label>
+
 	</div>
 	<ul class="artistlist">
 		<li class="artist cf" ng-repeat="item in artists | filter:query | orderBy:artistOrder:direction">
