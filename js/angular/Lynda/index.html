@@ -4,49 +4,14 @@
 <meta charset="UTF-8">
 <title>Angular Demo</title>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.min.js"></script>
+
+<script src="js/app.js"></script>
 <script src="js/controllers.js"></script>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <!-- All of the following under controller "MyController"  -->
-<div class="main" ng-controller="MyController">
-	<!-- Nothing but styling here -->
-	<div class="search">
-<h1>Artist Directory</h1>
-<label>Search: </label>
-<!-- Main box defined with placeholder text -->
-<input ng-model="query" placeholder="search for artists" autofocus>
-<label class="formgroup">by:
-
-<!-- name and reknown are nested in the model 'artistOrder' which are then nested in ng-repeat orderBy:artistOrder:direction below. 'direction' defined below	 -->
-
-<!-- 'name' and 'reknown' must be picked up here by value=''  -->
-<select ng-model="artistOrder">
-	<option value="name">Name</option> 
-	<option value="reknown">Reknown</option>
-</select>
-
-<!-- formgroup' is for styling only. value="reverse" and 'checked' only parts of logic here  -->
-</label>
-<label class="formgroup">
-	<input type="radio" ng-model="direction" name="direction" checked>
-	ascending
-</label>
-<label class="formgroup">
-	<input type="radio" ng-model="direction" name="direction" value="reverse">
-	descending
-</label>
-
-	</div>
-	<ul class="artistlist">
-		<li class="artist cf" ng-repeat="item in artists | filter:query | orderBy:artistOrder:direction">
-			<img ng-src="images/{{item.shortname}}_tn.jpg" alt="Photo of {{item.name}}">
-			<div class="info"> 
-				<h2>{{item.name}}</h2>
-				<h3>{{item.reknown}}</h3>
-			</div>
-		</li>
-</ul>
-</div>
+<div class="main" ng-view> </div>
 </body>
 </html>
