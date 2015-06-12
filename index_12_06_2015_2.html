@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+   <link rel="shortcut icon" href="http://files.softicons.com/download/system-icons/lozengue-filetype-icons-by-gurato/png/512/HTML.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+<!-- jQuery -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+
+<!-- Firebase -->
+<script src='https://cdn.firebase.com/js/client/2.1.0/firebase.js'></script>
+
+<!-- Firechat -->
+<link rel='stylesheet' href='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.css' />
+<script src='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.js'></script>
+
+<title>F.K.O CODING</title>
+</head>
+<body ng-init="customers=[{name: 'Oliver Lake', city: 'Hong Kong'}, {name: 'Flynn Northam', city: 'Hong Kong'}, {name: 'George Lipowski', city: 'Hong Kong'}, {name: 'Anton Kopec', city: 'Hong Kong'},{name: 'Kyan Boddington', city: 'Hong Kong'}]">
+Friend Search
+</br>
+<input type="text" ng-model="name" />
+</br>
+<ul>
+<li ng-repeat="cust in customers | filter:name">{{cust.name }} - {{ cust.city }}</li>
+</ul>
+  <meta charset="utf-8">
+
+      <span class="skills">Welcome To F.K.O</span>
+      <p style="color:green">This Website is about codes
+      <p style="color:green">We Teach HTML and we know awsome codes!<p>
+
+      <img src="http://media.giphy.com/media/cpIvoQSU8vC9O/giphy.gif">
+
+<a href='#' onclick='login();'>Login to K.F.O Chatroom</a>
+
+<script>
+// Create a new Firebase reference, and a new instance of the Login client
+var chatRef = new Firebase('https://intense-inferno-6480.firebaseio.com/chat');
+function login() {
+  chatRef.authWithOAuthPopup('google', function(error, authData) {
+    if (error) {
+      console.log(error);
+    }
+  });
+}
+chatRef.onAuth(function(authData) {
+  // Once authenticated, instantiate Firechat with our user id and user name
+  if (authData) {
+    initChat(authData);
+  }
+});
+</script>
+<script>
+function initChat(authData) {
+  var chat = new FirechatUI(chatRef, document.getElementById('firechat-wrapper'));
+  chat.setUser(authData.uid, authData[authData.provider].displayName);
+}
+</script>
+
+<script>
+// Create a new Firebase reference, and a new instance of the Login client
+var chatRef = new Firebase('https://intense-inferno-6480.firebaseio.com/chat');
+function login() {
+  chatRef.authWithOAuthPopup('google', function(error, authData) {
+    if (error) {
+      console.log(error);
+    }
+  });
+}
+chatRef.onAuth(function(authData) {
+  // Once authenticated, instantiate Firechat with our user id and user name
+  if (authData) {
+    initChat(authData);
+  }
+});
+</script>
+
+<script>
+function initChat(authData) {
+  var chat = new FirechatUI(chatRef, document.getElementById('firechat-wrapper'));
+  chat.setUser(authData.uid, authData[authData.provider].displayName);
+}
+</script>
+
+<div id='firechat-wrapper'></div>
+
+
+
+  <title>JS Bin</title>
+<style>
+#header {
+    background-color:black;
+    color:white;
+    text-align:center;
+    padding:5px;
+}
+#nav {
+    line-height:30px;
+    background-color:#eeeeee;
+    height:300px;
+    width:100px;
+    float:left;
+    padding:5px;      
+}
+#section {
+    width:350px;
+    float:left;
+    padding:10px;  
+}
+#footer {
+    background-color:black;
+    color:white;
+    clear:both;
+    text-align:center;
+   padding:5px;  
+}
+</style>
+</head>
+<body>
+
+<div id="header">
+<h1>Lucky Dip</h1>
+</div>
+
+<div id="nav"><br>
+Copywrite Claim
+</div>
+
+<div id="section">
+<h2>Lucky Dip</h2><img src="http://static.fjcdn.com/gifs/Best_711156_484205.gif">
+
+
+
+</div>
+
+<div id="footer">
+Left Click It And Drag It Out For The Lucky Dip
+</div>
+
+</body>
+</html>​
+</body>
+</html>
+...
