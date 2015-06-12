@@ -298,7 +298,6 @@ Remove the Disk That was added to volume group
 vgreduce vg_group01 /dev/sdb2
 
 =================================================================================
-
 MIGRATING DATA
 
 Physical Extents = YOUR DATA
@@ -322,4 +321,27 @@ pvmove /dev/sdb1 /dev/sdb2
 /dev/sdb2         5859376    12582911     3361768   83  Linux
 
 
+=================================================================================
+REMOVING DATA/ LVs and PVs
 
+_________________________________________________________________
+1/ Remove Logical Volume
+
+lvremove /dev/vg_group01/secretSanta
+
+
+2/ Remove Volume Group
+
+vgremove vg_group01
+
+
+Remove Both LV and VG Together
+
+vgremove -f vg_group01
+
+3/ Wipe Out Physical Disks
+
+pvremove /dev/sdb1
+
+=================================================================================
+SETTING UP RAID
