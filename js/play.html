@@ -484,24 +484,89 @@
 // console.log(ship1.hits);
 	
 
-	var ships = {
-		constant1: Math.floor(Math.random() * 6),
-		location1: Math.floor(Math.random() * 5),
-		shipLocations: function(){
-			locations = [];
-			ship1 = [];
-			for(i =0; i < 3; i++){
-				ship1.push(this.constant1 + String(this.location1 + i));
-			}
-		 locations.push(ship1);
-		 return locations;
+	// var ships = {
+	// 	constant1: Math.floor(Math.random() * 6),
+	// 	location1: Math.floor(Math.random() * 5),
+	// 	shipLocations: function(){
+	// 		locations = [];
+	// 		ship1 = [];
+	// 		for(i =0; i < 3; i++){
+	// 			ship1.push(this.constant1 + String(this.location1 + i));
+	// 		}
+	// 	 locations.push(ship1);
+	// 	 return locations;
        
-		}
-	}, 
-	collisions: function() {
+	// 	}
+	// }, 
+	// collisions: function() {
 		
+	// }
+	// console.log(ships.shipLocations());
+
+//Passing functions to functions
+
+var passengers = [ { name: "Jane Doloop", paid: true }, 
+				   { name: "Dr. Evel", paid: true },
+				   { name: "Sue Property", paid: false }, 
+				   { name: "John Funcall", paid: true } ];
+
+
+function processPassengers(passengers, testFunction) { 
+	for (var i = 0; i < passengers.length; i++) {
+		if (testFunction(passengers[i])) { 
+			return false;
+		} 
 	}
-	console.log(ships.shipLocations());
+return true; 
+}
+
+	function printPassenger(passenger) {
+		if(passenger.paid == true){
+			console.log(passenger.name + " has paid");
+		} else {
+			console.log(passenger.name + " hasn't paid");
+		}
+
+	}
+
+	processPassengers(passengers, printPassenger);
+
+function fun(echo) { 
+	console.log(echo);
+};
+
+	function boo(aFunction) { 
+		aFunction("boo");
+}
+
+//---------------------------------
+
+function checkNoFlyList(passenger) {
+return (passenger.name === "Dr. Evel");
+}
+
+var allCanFly = processPassengers(passengers, checkNoFlyList); 
+if (!allCanFly) {
+	console.log("The plane can't take off: we have a passenger on the no-fly-list."); 
+}
+//####################
+
+fun("hello");
+function boo(aFunction) { 
+	aFunction("boo");
+}
+
+boo(fun);
+
+console.log(fun);
+
+var moreFun = fun; moreFun("hello again");
+
+function echoMaker() { 
+	return fun;
+}
+var bigFun = echoMaker(); 
+bigFun("Is there an echo?");
 	
 	</script>
 </body>
