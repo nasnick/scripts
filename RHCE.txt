@@ -59,7 +59,6 @@ VIEW:
 __________________________________________________________________
   2/ Create volume group and add physical disk to it:
 
-  [root@localhost ~]# 
 [root@localhost ~]# vgcreate vg_group01 /dev/sdb1
   Volume group "vg_group01" successfully created
 
@@ -345,3 +344,7 @@ pvremove /dev/sdb1
 
 =================================================================================
 SETTING UP RAID
+
+RAID 1: Mirroring
+RAID 5: Striping with parity (25% used for parity bit)
+
