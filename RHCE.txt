@@ -36,7 +36,7 @@ always map back to a physical extent
 
 CREATING A LVM PARTITION
 __________________________________________________________________
-1/ Initialise disk to be used for a phyiscal volume:
+1/ Initialise disk to be used for a physical volume:
 
 [root@localhost ~]# pvcreate /dev/sdb1
   Physical volume "/dev/sdb1" successfully created
@@ -59,7 +59,6 @@ VIEW:
 __________________________________________________________________
   2/ Create volume group and add physical disk to it:
 
-  [root@localhost ~]# 
 [root@localhost ~]# vgcreate vg_group01 /dev/sdb1
   Volume group "vg_group01" successfully created
 
@@ -345,3 +344,138 @@ pvremove /dev/sdb1
 
 =================================================================================
 SETTING UP RAID
+
+RAID 1: Mirroring
+RAID 5: Striping with parity (25% used for parity bit)
+
+Add 3 partitions into the array:
+
+[root@localhost ~]# mdadm -Cv /dev/md0 --level=5 -n3 /dev/sdd1 /dev/sdd2 /dev/sde1
+
+mdadm: You have listed more devices (4) than are in the array(3)!
+[root@localhost ~]# mdadm -Cv /dev/md0 --level=5 -n3 /dev/sdd1 /dev/sdd2 /dev/sde1 
+mdadm: layout defaults to left-symmetric
+mdadm: layout defaults to left-symmetric
+mdadm: chunk size defaults to 512K
+mdadm: size set to 1951744K
+mdadm: largest drive (/dev/sdd2) exceeds size (1951744K) by more than 1%
+
+Continue creating array? yes
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md0 started.
+
+_________________________________________________________________
+Created successfully:
+
+[root@localhost ~]# mdadm -D /dev/md0
+/dev/md0:
+        Version : 1.2
+  Creation Time : Mon Jun 15 17:03:00 2015
+     Raid Level : raid5
+     Array Size : 3903488 (3.72 GiB 4.00 GB)
+  Used Dev Size : 1951744 (1906.32 MiB 1998.59 MB)
+   Raid Devices : 3
+  Total Devices : 3
+    Persistence : Superblock is persistent
+
+    Update Time : Mon Jun 15 17:03:11 2015
+          State : clean 
+ Active Devices : 3
+Working Devices : 3
+ Failed Devices : 0
+  Spare Devices : 0
+
+         Layout : left-symmetric
+     Chunk Size : 512K
+
+           Name : localhost.localdomain:0  (local to host localhost.localdomain)
+           UUID : 855daf19:12025a2e:b22f4263:b673e5a3
+         Events : 18
+
+    Number   Major   Minor   RaidDevice State
+       0       8       49        0      active sync   /dev/sdd1
+       1       8       50        1      active sync   /dev/sdd2
+       3       8       65        2      active sync   /dev/sde1
+
+Check status
+
+_________________________________________________________________
+[root@localhost ~]# cat /proc/mdstat
+Personalities : [raid6] [raid5] [raid4] 
+md0 : active raid5 sde1[3] sdd1[0] sdd2[1]
+      3903488 blocks super 1.2 level 5, 512k chunk, algorithm 2 [3/3] [UUU]
+      
+unused devices: <none>
+
+_________________________________________________________________
+Fail a device in the group:
+
+mdadm /dev/md0 -f /dev/sbdb1
+
+Show the status:
+
+[root@localhost ~]# mdadm -D /dev/md0
+/dev/md0:
+        Version : 1.2
+  Creation Time : Mon Jun 15 17:03:00 2015
+     Raid Level : raid5
+     Array Size : 3903488 (3.72 GiB 4.00 GB)
+  Used Dev Size : 1951744 (1906.32 MiB 1998.59 MB)
+   Raid Devices : 3
+  Total Devices : 3
+    Persistence : Superblock is persistent
+
+    Update Time : Mon Jun 15 17:31:31 2015
+          State : clean, degraded 
+ Active Devices : 2
+Working Devices : 2
+ Failed Devices : 1
+  Spare Devices : 0
+
+         Layout : left-symmetric
+     Chunk Size : 512K
+
+           Name : localhost.localdomain:0  (local to host localhost.localdomain)
+           UUID : 855daf19:12025a2e:b22f4263:b673e5a3
+         Events : 20
+
+    Number   Major   Minor   RaidDevice State
+       0       8       49        0      active sync   /dev/sdd1
+       1       8       50        1      active sync   /dev/sdd2
+       4       0        0        4      removed
+
+       3       8       65        -      faulty   /dev/sde1
+
+_________________________________________________________________
+Remove disk from array:
+
+[root@localhost ~]# mdadm /dev/md0 -r /dev/sde1
+mdadm: hot removed /dev/sde1 from /dev/md0
+
+See the status:
+
+    Number   Major   Minor   RaidDevice State
+       0       8       49        0      active sync   /dev/sdd1
+       1       8       50        1      active sync   /dev/sdd2
+       4       0        0        4      removed
+
+_________________________________________________________________
+Add a new disk:
+
+mdadm /dev/md0 -a /dev/sdb1
+
+Stop the array:
+
+mdadm -Sv /dev/md0
+
+_________________________________________________________________
+Remove RAID array:
+
+mdadm -remove /dev/md0
+
+
+Then remove partitions:
+
+pvremove /dev/sdb1
+
+*** Must creat /boot on RAID 1
