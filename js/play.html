@@ -578,7 +578,6 @@
 // { name: "Root Beer", calories: 200, color: "caramel", sold: 9909 }, 
 // { name: "Water", calories: 0, color: "clear", sold: 62123 }
 // ];
-
 function compareNumbers(num1, num2) { if (num1 > num2) {
 return 1;
 } else if (num1 === num2) {
@@ -587,7 +586,10 @@ return 1;
 return -1; 
 }
 }
-var numbersArray = [60, 50, 62, 58, 54, 54]; 
+// var numbersArray = [60, 50, 62, 58, 54, 54, 2, 3, 4];
+var numbersArray =  [1, 10, 2, 21];
+console.log(numbersArray);
+console.log(numbersArray.sort());
 numbersArray.sort(compareNumbers); 
 console.log(numbersArray);
 
