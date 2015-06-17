@@ -505,68 +505,95 @@
 
 //Passing functions to functions
 
-var passengers = [ { name: "Jane Doloop", paid: true }, 
-				   { name: "Dr. Evel", paid: true },
-				   { name: "Sue Property", paid: false }, 
-				   { name: "John Funcall", paid: true } ];
+// var passengers = [ { name: "Jane Doloop", paid: true }, 
+// 				   { name: "Dr. Evel", paid: true },
+// 				   { name: "Sue Property", paid: false }, 
+// 				   { name: "John Funcall", paid: true } ];
 
 
-function processPassengers(passengers, testFunction) { 
-	for (var i = 0; i < passengers.length; i++) {
-		if (testFunction(passengers[i])) { 
-			return false;
-		} 
-	}
-return true; 
+// function processPassengers(passengers, testFunction) { 
+// 	for (var i = 0; i < passengers.length; i++) {
+// 		if (testFunction(passengers[i])) { 
+// 			return false;
+// 		} 
+// 	}
+// return true; 
+// }
+
+// 	function printPassenger(passenger) {
+// 		if(passenger.paid == true){
+// 			console.log(passenger.name + " has paid");
+// 		} else {
+// 			console.log(passenger.name + " hasn't paid");
+// 		}
+
+// 	}
+
+// 	processPassengers(passengers, printPassenger);
+
+// function fun(echo) { 
+// 	console.log(echo);
+// };
+
+// 	function boo(aFunction) { 
+// 		aFunction("boo");
+// }
+
+// //---------------------------------
+
+// function checkNoFlyList(passenger) {
+// return (passenger.name === "Dr. Evel");
+// }
+
+// var allCanFly = processPassengers(passengers, checkNoFlyList); 
+// if (!allCanFly) {
+// 	console.log("The plane can't take off: we have a passenger on the no-fly-list."); 
+// }
+// //####################
+
+// fun("hello");
+// function boo(aFunction) { 
+// 	aFunction("boo");
+// }
+
+// boo(fun);
+
+// console.log(fun);
+
+// var moreFun = fun; moreFun("hello again");
+
+// function echoMaker() { 
+// 	return fun;
+// }
+// var bigFun = echoMaker(); 
+// bigFun("Is there an echo?");
+
+// var products = [
+// { name: "Grapefruit", calories: 170, color: "red", sold: 8200 }, 
+// { name: "Orange", calories: 160, color: "orange", sold: 12101 }, 
+// { name: "Cola", calories: 210, color: "caramel", sold: 25412 },
+// { name: "Diet Cola", calories: 0, color: "caramel", sold: 43922 }, 
+// { name: "Lemon", calories: 200, color: "clear", sold: 14983 },
+// { name: "Raspberry", calories: 180, color: "pink", sold: 9427 },
+// { name: "Root Beer", calories: 200, color: "caramel", sold: 9909 }, 
+// { name: "Water", calories: 0, color: "clear", sold: 62123 }
+// ];
+function compareNumbers(num1, num2) { if (num1 > num2) {
+return 1;
+} else if (num1 === num2) {
+           return 0;
+       } else {
+return -1; 
 }
-
-	function printPassenger(passenger) {
-		if(passenger.paid == true){
-			console.log(passenger.name + " has paid");
-		} else {
-			console.log(passenger.name + " hasn't paid");
-		}
-
-	}
-
-	processPassengers(passengers, printPassenger);
-
-function fun(echo) { 
-	console.log(echo);
-};
-
-	function boo(aFunction) { 
-		aFunction("boo");
 }
+// var numbersArray = [60, 50, 62, 58, 54, 54, 2, 3, 4];
+var numbersArray =  [1, 10, 2, 21];
+console.log(numbersArray);
+console.log(numbersArray.sort());
+numbersArray.sort(compareNumbers); 
+console.log(numbersArray);
 
-//---------------------------------
 
-function checkNoFlyList(passenger) {
-return (passenger.name === "Dr. Evel");
-}
-
-var allCanFly = processPassengers(passengers, checkNoFlyList); 
-if (!allCanFly) {
-	console.log("The plane can't take off: we have a passenger on the no-fly-list."); 
-}
-//####################
-
-fun("hello");
-function boo(aFunction) { 
-	aFunction("boo");
-}
-
-boo(fun);
-
-console.log(fun);
-
-var moreFun = fun; moreFun("hello again");
-
-function echoMaker() { 
-	return fun;
-}
-var bigFun = echoMaker(); 
-bigFun("Is there an echo?");
 	
 	</script>
 </body>
