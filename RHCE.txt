@@ -13,19 +13,24 @@ parted /dev/sdb1
 > end?2048m
 
 Created 4 partitions on a 5GB disk:
-**Not sure why filesystem isn't listed as ext4
 
+[root@localhost ~]# parted /dev/sde
+GNU Parted 3.1
+Using /dev/sde
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print                                                            
 Model: ATA VBOX HARDDISK (scsi)
 Disk /dev/sde: 5369MB
 Sector size (logical/physical): 512B/512B
 Partition Table: msdos
 Disk Flags: 
 
-Number  Start   End     Size    Type     File system  Flags
- 1      1049kB  1000MB  999MB   primary
+Number  Start   End     Size    Type     File system     Flags
+ 1      1049kB  1000MB  999MB   primary  ext4
  2      1000MB  3000MB  2000MB  primary
  3      3000MB  4000MB  1000MB  primary
- 4      4000MB  5000MB  999MB   primary
+ 4      4000MB  5000MB  999MB   primary  linux-swap(v1)
+
 
 Setting up the swap space:
 
@@ -34,6 +39,13 @@ Setting up swapspace version 1, size = 975868 KiB
 no label, UUID=3d523bcb-0502-4b9c-8a77-65bb74ef5da4
 [root@localhost ~]# swapon /dev/sde4
 
+View swaps on the system:
+
+[root@localhost ~]# cat /proc/swaps
+Filename        Type    Size  Used  Priority
+/dev/dm-1                               partition 839676  137848  -1
+/dev/sde4                               partition 975868  0 -2
+
 
 ==========================================================================================
 LOGICAL VOLUME MANAGER
@@ -41,7 +53,7 @@ LOGICAL VOLUME MANAGER
 Physical Volumes >> Volume Group >> Logical Volumes
 
 /dev/sdb1        >> vg_group01   >> secretSanta
-  
+
                     Physical         Logical
                     extents          extents
 
@@ -68,7 +80,6 @@ LVM has two units: physical extents and logical extents.
 
 Physical extents are used when dealing with volume groups, and logical extents, with logical volumes. The logical extents
 always map back to a physical extent
-
 
 __________________________________________________________________
 CREATING A LVM PARTITION
@@ -547,5 +558,53 @@ Superblock backups stored on blocks:
 Allocating group tables: done                            
 Writing inode tables: done                            
 Creating journal (32768 blocks): done
-Writing superblocks and filesystem accounting information: done 
+Writing superblocks and filesystem accounting information: done
+
+
+_________________________________________________________________
+FSCK
+
+Var mounted on /dev/sdb1
+
+Go into runleve 1:
+init 1
+
+unmount /var (would be in the fstab)
+
+fsck -t ext4 /dev/sdb1
+
+Remount:
+
+mount /dev/sdb1 /var
+
+_________________________________________________________________
+TUNE2FS
+
+Add jounaling to an ext2 filesystem:
+
+1/ Mount as read only (or unmount)
+
+mount -o remount,ro /dev/sdb1
+
+2/ tune that sucker
+
+tune2fs -j /dev/sdb1
+
+3/ remount read/ write
+
+mount -o remount,rw /dev/sdb1
+
+4/ Change entry in fstab file from ext2 to ext3
+
+5/ Change back
+
+tune2fs ^O has_journal
+
+from ext2 pr ext3 to ext4 is a one way street but here ya are:
+
+tune2fs -o extent,uninit_bg,dir_index /dev/vd1
+
+6/ View setings
+
+dumpe2fs /dev/vda1 | grep "Filesystem features"
 
