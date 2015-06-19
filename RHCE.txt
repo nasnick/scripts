@@ -608,3 +608,70 @@ tune2fs -o extent,uninit_bg,dir_index /dev/vd1
 
 dumpe2fs /dev/vda1 | grep "Filesystem features"
 
+_________________________________________________________________
+
+See Swaps:
+
+[root@localhost ~]# cat /proc/swaps 
+Filename        Type    Size  Used  Priority
+/dev/dm-1                               partition 839676  1924  -1
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--------------------------------EXERCISE 6-2--------------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[root@localhost ~]# mkfs.ext2 /dev/sdd
+
+[root@localhost ~]# dumpe2fs /dev/sdd
+dumpe2fs 1.42.9 (28-Dec-2013)
+Filesystem volume name:   <none>
+Last mounted on:          <not available>
+Filesystem UUID:          37a019e9-f25e-433b-83e8-94bc2d7d701c
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      ext_attr resize_inode dir_index filetype sparse_super large_file
+Filesystem flags:         signed_directory_hash 
+Default mount options:    user_xattr acl
+Filesystem state:         clean
+Errors behavior:          Continue
+Filesystem OS type:       Linux
+Inode count:              262144
+Block count:              1048576
+Reserved block count:     52428
+Free blocks:              1030066
+Free inodes:              262133
+First block:              0
+Block size:               4096
+Fragment size:            4096
+Reserved GDT blocks:      255
+Blocks per group:         32768
+Fragments per group:      32768
+Inodes per group:         8192
+Inode blocks per group:   512
+Filesystem created:       Thu Jun 18 22:08:37 2015
+Last mount time:          n/a
+Last write time:          Thu Jun 18 22:08:37 2015
+Mount count:              0
+Maximum mount count:      -1
+Last checked:             Thu Jun 18 22:08:37 2015
+Check interval:           0 (<none>)
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:           256
+Required extra isize:     28
+Desired extra isize:      28
+Default directory hash:   half_md4
+Directory Hash Seed:      ecba2966-083e-4f6d-a975-78ef7d4bb2e8
+
+
+Group 0: (Blocks 0-32767)
+  Primary superblock at 0, Group descriptors at 1-1
+  Reserved GDT blocks at 2-256
+  Block bitmap at 257 (+257), Inode bitmap at 258 (+258)
+  Inode table at 259-770 (+259)
+  31991 free blocks, 8181 free inodes, 2 directories
+  Free blocks: 777-32767
+  Free inodes: 12-8192
+
