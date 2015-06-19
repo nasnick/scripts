@@ -1,7 +1,7 @@
 //appControllers to be defined below. myApp in array refers to myApp in html document.
-var myApp = angular.module('myApp', ['ngRoute', 'appControllers']);
+var myApp = angular.module('myApp', ['ngRoute', 'firebase', 'appControllers']);
 
-var appControllers = angular.module('appControllers',[]);
+var appControllers = angular.module('appControllers', ['firebase']);
 
 myApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider.
@@ -14,7 +14,8 @@ myApp.config(['$routeProvider', function($routeProvider) {
 		controller: 'RegistrationController'
 	}).
 	when('/meetings', {
-		templateUrl: 'views/meetings.html'
+		templateUrl: 'views/meetings.html',
+		controller: 'MeetingsController'
 	}).
 	otherwise({
 		redirectTo: '/login'
