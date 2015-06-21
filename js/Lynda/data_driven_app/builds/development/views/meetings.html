@@ -1,6 +1,17 @@
 <div class="meetings cf">
 <h1>Add Meeting</h1>	
-<form action="" class="formgroup addmeeting cf"></form>
+<!-- form.formgroup.addmeeting.cf -->
+<!-- novalidate disables html5 validation -->
+<form action="" class="formgroup addmeeting cf" name="myform" 
+	ng-submit="addMeeting()" novalidate>
+<!-- div.inputwrapper -->
+<div class="inputwrapper">
+	<input type="text" name="meetingname" placeholder="Meeting name" 
+	ng-model="meetingname" ng-required="true">
+	</div>
+	<button class="submit" class="btn"
+	ng-disabled="myform.$invalid">+</button>
+</form>
 
 
 <h2>Your Meetings</h2>
