@@ -1,10 +1,10 @@
 myApp.controller('MeetingsController',
-	function($scope, $firebaseObject) {
-		var meetings = '';
+	function($scope, $firebase) {
 		var ref = new Firebase("https://attendanceapproger.firebaseio.com/meetings");
-		var meetings = $firebaseObject(ref);
-		$scope.meetings = meetings;
+		var meetings = $firebase(ref);
+		$scope.meetings = meetings.$asObject();
 		//addMeeting below is from ng-submit="addMeeting()" in meetings.html
+		
 		$scope.addMeeting = function() {
 			//pushing an object into method $push
 			meetings.$push({
@@ -14,7 +14,13 @@ myApp.controller('MeetingsController',
 			}).then(function() {
 				$scope.meetingname='';
 			});
+		}; //add meeting
+		
+		$scope.deleteMeeting = function(key){
+			meetings.$remove(key);
 		};
+
+
 });
 
 
