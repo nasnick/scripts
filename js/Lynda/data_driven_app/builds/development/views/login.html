@@ -5,6 +5,8 @@
 	<h1>Hi there!</h1>
 	<p>Login to the awskimness</p>
 
+	<p class="error formerror"ng-show="message">{{message}}</p>
+
 	<input type="email" name="email" placeholder="Email" autofocus
 	ng-model="user.email" ng-required="true">
 	<p class="error validationerror"
