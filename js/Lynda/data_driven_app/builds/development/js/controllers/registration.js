@@ -10,7 +10,7 @@ myApp.controller('RegistrationController',
 			email: $scope.user.email,
 			password: $scope.user.password
 		}).then(function(user) {
-			$location.path('/meetings.html');
+			$location.path('/meetings');
 		}).catch(function(error) {
 			$scope.message = error.message;
 		});
