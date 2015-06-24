@@ -54,8 +54,8 @@ Physical Volumes >> Volume Group >> Logical Volumes
 
 /dev/sdb1        >> vg_group01   >> secretSanta
 
-                    Physical         Logical
-                    extents          extents
+Physical         Logical
+extents          extents
 
 Physical Extents = YOUR DATA
 
@@ -78,16 +78,19 @@ Logical Volume
 
 LVM has two units: physical extents and logical extents. 
 
-Physical extents are used when dealing with volume groups, and logical extents, with logical volumes. The logical extents
-always map back to a physical extent
+Physical extents are used when dealing with volume groups, and logical extents, with logical volumes. The logical extents always map back to a physical extent
 
 __________________________________________________________________
 CREATING A LVM PARTITION
+
+*PVCREATE
 
 1/ Initialise disk to be used for a physical volume:
 
 [root@localhost ~]# pvcreate /dev/sdb1
   Physical volume "/dev/sdb1" successfully created
+
+*PVDISPLAY
 
 VIEW: 
 
@@ -763,5 +766,14 @@ Writing superblocks and filesystem accounting information: done
 ---------------------------------------------------------------------
 FHS - FILESYTEM HIERACHY STANDARD
 
+/boot recommended on seperate disks:
+
+Linux kernel, Initial RAM Disk, and bootloader 
+
+Don't mount these guys on seperate disk:
+
+/bin, /dev, /etc, /lib, /root, /sbin, and /selinux
+
+/proc and /sys files are filled during boot and disappear when powered down
 
 
