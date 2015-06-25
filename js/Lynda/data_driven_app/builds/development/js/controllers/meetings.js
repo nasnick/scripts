@@ -19,8 +19,6 @@ myApp.controller('MeetingsController',
 		$scope.deleteMeeting = function(key){
 			meetings.$remove(key);
 		};
-
-
 });
 
 
