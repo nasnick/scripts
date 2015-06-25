@@ -10,7 +10,7 @@ myApp.controller('RegistrationController',
 		// auth.$authWithPassword({
 			//user below coming in from view
 			Authentication.login($scope.user)
-		}).then(function(user) {
+		.then(function(user) {
 			$location.path('/meetings');
 		}).catch(function(error) {
 			$scope.message = error.message;
