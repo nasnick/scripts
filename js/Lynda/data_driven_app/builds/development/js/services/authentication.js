@@ -20,7 +20,7 @@ var myObject = {
 		return auth.$createUser({
 			email: user.email,
 			password: user.password
-		}); //$authWithPassword
+		}).then(function(regUser)); //$authWithPassword
 	  }, //register
 
 	}; //myObject
