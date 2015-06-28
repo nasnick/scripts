@@ -20,8 +20,8 @@ var myObject = {
 		return auth.$createUser({
 			email: user.email,
 			password: user.password
-		}).then(function(regUser){
-			var ref = new Firebase(FIREBASE_URL + 'users');
+		}).then(function(regUser) {
+			var ref = new Firebase(FIREBASE_URL+'users');
 			var firebaseUsers = $firebase(ref);
 
 			var userInfo = {
