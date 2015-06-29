@@ -1,6 +1,6 @@
 //appControllers to be defined below. myApp in array refers to myApp in html document.
 var myApp = angular.module('myApp', ['ngRoute', 'firebase', 'appControllers'])
-.constant('FIREBASE_URL', "https://attendanceapproger.firebaseio.com");
+.constant('FIREBASE_URL', 'https://attendanceapproger.firebaseio.com/');
 
 var appControllers = angular.module('appControllers', ['firebase']);
 
