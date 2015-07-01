@@ -1,6 +1,4 @@
 #!/usr/bin/perl -w
-# Sergio Aguila
-# 9.6.2014
 # Purpose: Restart Connector if find an error in the list at the bottom of this script
 
 use File::Basename;
@@ -121,9 +119,9 @@ sub logMessage {
 
  
 sub sendMessage {
-    $to = 'nz.unix@p.b2be.com';
-    $cc = 'gpsss.inf@b2be.com';
-    $from = 'root@unxcoms01.ecngroup.co.nz';
+    $to = 'nz@be.com';
+    $cc = 'gpsss@be.com';
+    $from = 'root@co.nz';
     $subject = 'Connector Restarted';
     $message = 'The connector has been restarted by restartconnector.pl';
 

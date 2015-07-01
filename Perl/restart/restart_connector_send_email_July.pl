@@ -1,4 +1,3 @@
--bash-2.05b$ cat restartconnector.pl
 #!/usr/bin/perl -w
 # Sergio Aguila
 # 9.6.2014
@@ -8,7 +7,9 @@ use File::Basename;
 
 my $strPath = "/usr/local/ecnet/Connector";
 my $strLogFile = $strPath."/connectorrestarted.log";
-
+my $emailSubject;
+my $emailMessage;
+  
 ## Redirect all the output to the logfile
 open(STDOUT, '>>',$strLogFile) or die $!;
 
@@ -20,9 +21,15 @@ if (checkLogFile()) {
 	    logMessage("Connector Stopped");
 	    if (! startConnector()) {    # Pass the check if the connector started successfully
 		logMessage("Connector Restarted");
+                $emailSubject = "Connector restarted on unxcoms01"; 
+                $emailMessage = "Connector on unxcoms01 was restarted at ";
+                sendEmail();
 		exit 0;
 	    } else {
 		logMessage("Could not start Connector");
+                $emailSubject = "Connector NOT restarted on unxcoms01";
+                $emailMessage = "Connector on unxcoms01 was NOT restarted. Escalate to INF team immediately. Timestamp: ";
+                sendEmail();
 		exit 1;
 	    }
 	} else {
@@ -76,8 +83,11 @@ sub stopConnector {
 sub startConnector {  
     my $strCheck;  
     my $count = 0;
-    `$strPath/con_start.sh`;
+    logMessage("Before starting");
+    logMessage(system("$strPath/con_start.sh"));
+    logMessage("After starting");
     sleep 5;
+    logMessage("Before Checking");
     $strCheck = `$strPath/con_check.sh`;
     chomp($strCheck);
     logMessage($strCheck);
@@ -91,7 +101,11 @@ sub startConnector {
 ## Add the errors to this list
 sub getErrorList {
     my @errorList = (
-	'CHANNEL TERMINATED \[PLUMBINGWORLDdir.to.dir\]'
+	#'CHANNEL TERMINATED \[PLUMBINGWORLDdir.to.dir\]',
+	#'CHANNEL TERMINATED \[UNIDEN_WSL_PRODdir.to.MQ\]',
+	#'CHANNEL TERMINATED \[Triton_BOMdir.to.dir\]',
+	#'CHANNEL TERMINATED \[LEWISROAD_WOW_TESTdir.to.MQ\]'
+        'terminated with an unexpected error: java.lang.NullPointerException: null'
 #       Add errors here
 #	,'CHANNEL NEED TO BE RESTARTED',
 #	'Disconnecting from qmgr \[null\]',
@@ -102,7 +116,7 @@ sub getErrorList {
 
 ## Get the difference of the log since the last time was checked
 sub getDiffLog {
-    @difference = `sudo -u root /usr/bin/logtail $strPath/logfile.log-testrestart`;
+    @difference = `sudo -u root /usr/bin/logtail $strPath/logfile.log`;
     chomp @difference;  
     return @difference;  
 }
@@ -112,4 +126,23 @@ sub logMessage {
     my $timestamp = `perl -MPOSIX -le 'print strftime "%F %T", localtime $^T'`;
     chomp($timestamp);
     print $timestamp." ".$_[0]."\n";
+}
+
+sub sendEmail {
+ my $timestamp = `perl -MPOSIX -le 'print strftime "%F %T", localtime $^T'`;
+ $to = 'whoever@be.com,whoever@be.com';
+ $from = 'unxcoms01';
+ $subject = $emailSubject;
+ $message = $emailMessage.$timestamp;
+
+  open(MAIL, "|/usr/sbin/sendmail -t");
+
+   # Email Header
+   print MAIL "To: $to\n";
+   print MAIL "From: $from\n";
+   print MAIL "Subject: $subject\n\n";
+   # Email Body
+   print MAIL $message;
+
+   close(MAIL);
 }
