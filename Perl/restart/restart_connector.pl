@@ -1,10 +1,8 @@
+-bash-2.05b$ cat restartconnector.pl
 #!/usr/bin/perl -w
-# Sergio Aguila
-# 9.6.2014
 # Purpose: Restart Connector if find an error in the list at the bottom of this script
 
 use File::Basename;
-use MIME::Lite;
 
 my $strPath = "/usr/local/ecnet/Connector";
 my $strLogFile = $strPath."/connectorrestarted.log";
@@ -76,11 +74,8 @@ sub stopConnector {
 sub startConnector {  
     my $strCheck;  
     my $count = 0;
-    logMessage("Before starting");
-    logMessage(system("$strPath/con_start.sh"));
-    logMessage("After starting");
+    `$strPath/con_start.sh`;
     sleep 5;
-    logMessage("Before Checking");
     $strCheck = `$strPath/con_check.sh`;
     chomp($strCheck);
     logMessage($strCheck);
@@ -94,8 +89,7 @@ sub startConnector {
 ## Add the errors to this list
 sub getErrorList {
     my @errorList = (
-	'CHANNEL TERMINATED \[PLUMBINGWORLDdir.to.dir\]',
-	'CHANNEL TERMINATED \[UNIDEN_WSL_PRODdir.to.MQ\]'
+	'CHANNEL TERMINATED \[PLUMBINGWORLDdir.to.dir\]'
 #       Add errors here
 #	,'CHANNEL NEED TO BE RESTARTED',
 #	'Disconnecting from qmgr \[null\]',
@@ -106,7 +100,7 @@ sub getErrorList {
 
 ## Get the difference of the log since the last time was checked
 sub getDiffLog {
-    @difference = `sudo -u root /usr/bin/logtail $strPath/logfile.log`;
+    @difference = `sudo -u root /usr/bin/logtail $strPath/logfile.log-testrestart`;
     chomp @difference;  
     return @difference;  
 }
@@ -116,24 +110,4 @@ sub logMessage {
     my $timestamp = `perl -MPOSIX -le 'print strftime "%F %T", localtime $^T'`;
     chomp($timestamp);
     print $timestamp." ".$_[0]."\n";
-}
-
-
- 
-sub sendMessage {
-    $to = 'nz.unix@p.b2be.com';
-    $cc = 'gpsss.inf@b2be.com';
-    $from = 'root@unxcoms01.ecngroup.co.nz';
-    $subject = 'Connector Restarted';
-    $message = 'The connector has been restarted by restartconnector.pl';
-
-    $msg = MIME::Lite->new(
-                 From     => $from,
-                 To       => $to,
-                 Cc       => $cc,
-                 Subject  => $subject,
-                 Data     => $logMessage
-                 );
-                 
-$msg->send;
 }
