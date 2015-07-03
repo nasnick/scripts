@@ -777,3 +777,22 @@ Don't mount these guys on seperate disk:
 /proc and /sys files are filled during boot and disappear when powered down
 
 
+====================================================================================
+***********************************    LUKS     ************************************
+====================================================================================
+
+See if the required module is loaded - yep looking good:
+
+[root@localhost ~]# lsmod | grep dm_crypt
+dm_crypt               23138  0 
+dm_mod                104038  9 dm_log,dm_mirror,dm_crypt
+
+Add random data to a disk:
+
+badblocks -c 10240 -s -w -t random -v /dev/sdf
+
+Or using *DD
+
+dd if=/dev/urandom of=/dev/sdf
+
+
