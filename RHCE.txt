@@ -777,3 +777,159 @@ Don't mount these guys on seperate disk:
 /proc and /sys files are filled during boot and disappear when powered down
 
 
+====================================================================================
+***********************************    LUKS     ************************************
+====================================================================================
+
+See if the required module is loaded - yep looking good:
+
+[root@localhost ~]# lsmod | grep dm_crypt
+dm_crypt               23138  0 
+dm_mod                104038  9 dm_log,dm_mirror,dm_crypt
+
+1/ Add random data to a disk:
+
+*badblocks -c 10240 -s -w -t random -v /dev/sdf
+
+Or using *DD
+
+*dd if=/dev/urandom of=/dev/sdf
+
+2/ Encrpt with LUKS:
+
+*cryptsetup luksFormat /dev/sdf
+
+3/ Create a UUID for the device:
+
+[root@localhost ~]# *cryptsetup luksUUID /dev/sdf
+6f1a927a-40a0-47ed-9bc9-f5a182eeea0d
+
+Header Info:
+
+root@localhost ~]# *cryptsetup luksDump /dev/sdf
+LUKS header information for /dev/sdf
+
+Version:        1
+Cipher name:    aes
+Cipher mode:    xts-plain64
+Hash spec:      sha1
+Payload offset: 4096
+MK bits:        256
+MK digest:      98 fe 97 dc 5e 54 01 a4 a1 d2 42 ff 7d b5 b3 a6 2a a2 5e 0c 
+MK salt:        66 67 db 4d dc ea d2 dd 79 54 47 c4 ab b1 c2 81 
+                58 ff 39 2e d8 a9 be e6 cd 46 07 60 5f 7c 8e 99 
+MK iterations:  82000
+UUID:           6f1a927a-40a0-47ed-9bc9-f5a182eeea0d
+
+Key Slot 0: ENABLED
+  Iterations:           316439
+  Salt:                 44 3b 02 62 3f 10 90 c9 5d 66 d1 e6 b3 5e fb 5a 
+                          01 3a c6 aa f8 e0 85 ac e0 6d 7c 77 c2 b8 b5 80 
+  Key material offset:  8
+  AF stripes:             4000
+Key Slot 1: DISABLED
+Key Slot 2: DISABLED
+Key Slot 3: DISABLED
+Key Slot 4: DISABLED
+Key Slot 5: DISABLED
+Key Slot 6: DISABLED
+Key Slot 7: DISABLED
+
+4/ Add UUID to device:
+
+[root@localhost ~]# cryptsetup luksOpen /dev/sdf 6f1a927a-40a0-47ed-9bc9-f5a182eeea0d
+Enter passphrase for /dev/sdf: 
+
+A novel approach:
+
+# cryptsetup luksUUID /dev/sda1 > sda1uuid
+# cryptsetup luksOpen /dev/sda1 `cat sda1uuid`
+
+Now visible in /dev/mapper:
+
+[root@localhost ~]# ls -ltr  /dev/mapper/
+total 0
+crw-------. 1 root root 10, 236 Jul  3 16:13 control
+lrwxrwxrwx. 1 root root       7 Jul  3 16:26 centos-root -> ../dm-0
+lrwxrwxrwx. 1 root root       7 Jul  3 16:26 centos-swap -> ../dm-1
+lrwxrwxrwx. 1 root root       7 Jul  3 16:35 6f1a927a-40a0-47ed-9bc9-f5a182eeea0d -> ../dm-2
+
+**Don't have to call it the UUID - could do do:
+
+cryptsetup luksOpen /dev/sdf test
+
+5/ Make filesystem on the volume:
+
+mkfs.ext4 /dev/sdf 6f1a927a-40a0-47ed-9bc9-f5a182eeea0d
+
+6/ Put in /etc/fstab:
+
+The UUID above isn't the UUID of the filesystem. To get that:
+
+[root@localhost mnt]# dumpe2fs /dev/mapper/6f1a927a-40a0-47ed-9bc9-f5a182eeea0d | grep UUID
+dumpe2fs 1.42.9 (28-Dec-2013)
+Filesystem UUID:          b43917de-1e44-4474-92b9-5dfd6630e923
+
+*BLKID
+
+Shows UUIDs for devices:
+
+[root@localhost mnt]# blkid
+/dev/sr0: UUID="2015-02-12-15-58-24-00" LABEL="VBOXADDITIONS_4.3.22_98236" TYPE="iso9660" 
+/dev/sdf: UUID="6f1a927a-40a0-47ed-9bc9-f5a182eeea0d" TYPE="crypto_LUKS" 
+/dev/sdd: UUID="37a019e9-f25e-433b-83e8-94bc2d7d701c" TYPE="ext2" 
+/dev/sdb: UUID="dea41fd7-3f33-4b5c-97da-500cfe14086b" TYPE="ext4" 
+/dev/sda1: UUID="0fbfc05a-0f53-43f4-98b0-ce856517d313" TYPE="xfs" 
+/dev/sda2: UUID="qZw6wm-o0kt-Fcmq-iajl-NQEP-H95Z-Xi3zjg" TYPE="LVM2_member" 
+/dev/sde1: UUID="062a3f60-db30-4bce-8bfe-b258a571ca3d" TYPE="ext4" 
+/dev/sde4: UUID="3d523bcb-0502-4b9c-8a77-65bb74ef5da4" TYPE="swap" 
+/dev/mapper/centos-root: UUID="1ab0b45f-c037-417c-a983-33d599d6cb1b" TYPE="xfs" 
+/dev/mapper/centos-swap: UUID="d9853317-c9ac-4883-a83c-1cc540614813" TYPE="swap" 
+/dev/mapper/6f1a927a-40a0-47ed-9bc9-f5a182eeea0d: UUID="b43917de-1e44-4474-92b9-5dfd6630e923" TYPE="ext4" 
+
+*MTAB
+
+Verify how partitions are mounted in /etc/mstab
+
+[root@localhost ~]# cat /etc/mtab
+rootfs / rootfs rw 0 0
+proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
+sysfs /sys sysfs rw,seclabel,nosuid,nodev,noexec,relatime 0 0
+devtmpfs /dev devtmpfs rw,seclabel,nosuid,size=241260k,nr_inodes=60315,mode=755 0 0
+securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime 0 0
+tmpfs /dev/shm tmpfs rw,seclabel,nosuid,nodev 0 0
+devpts /dev/pts devpts rw,seclabel,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 0 0
+tmpfs /run tmpfs rw,seclabel,nosuid,nodev,mode=755 0 0
+tmpfs /sys/fs/cgroup tmpfs rw,seclabel,nosuid,nodev,noexec,mode=755 0 0
+cgroup /sys/fs/cgroup/systemd cgroup rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd 0 0
+pstore /sys/fs/pstore pstore rw,nosuid,nodev,noexec,relatime 0 0
+cgroup /sys/fs/cgroup/cpuset cgroup rw,nosuid,nodev,noexec,relatime,cpuset 0 0
+cgroup /sys/fs/cgroup/cpu,cpuacct cgroup rw,nosuid,nodev,noexec,relatime,cpuacct,cpu 0 0
+cgroup /sys/fs/cgroup/memory cgroup rw,nosuid,nodev,noexec,relatime,memory 0 0
+cgroup /sys/fs/cgroup/devices cgroup rw,nosuid,nodev,noexec,relatime,devices 0 0
+cgroup /sys/fs/cgroup/freezer cgroup rw,nosuid,nodev,noexec,relatime,freezer 0 0
+cgroup /sys/fs/cgroup/net_cls cgroup rw,nosuid,nodev,noexec,relatime,net_cls 0 0
+cgroup /sys/fs/cgroup/blkio cgroup rw,nosuid,nodev,noexec,relatime,blkio 0 0
+cgroup /sys/fs/cgroup/perf_event cgroup rw,nosuid,nodev,noexec,relatime,perf_event 0 0
+cgroup /sys/fs/cgroup/hugetlb cgroup rw,nosuid,nodev,noexec,relatime,hugetlb 0 0
+configfs /sys/kernel/config configfs rw,relatime 0 0
+/dev/mapper/centos-root / xfs rw,seclabel,relatime,attr2,inode64,noquota 0 0
+selinuxfs /sys/fs/selinux selinuxfs rw,relatime 0 0
+systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd=31,pgrp=1,timeout=300,minproto=5,maxproto=5,direct 0 0
+mqueue /dev/mqueue mqueue rw,seclabel,relatime 0 0
+hugetlbfs /dev/hugepages hugetlbfs rw,seclabel,relatime 0 0
+debugfs /sys/kernel/debug debugfs rw,relatime 0 0
+/dev/sda1 /boot xfs rw,seclabel,relatime,attr2,inode64,noquota 0 0
+gvfsd-fuse /run/user/1000/gvfs fuse.gvfsd-fuse rw,nosuid,nodev,relatime,user_id=1000,group_id=1000 0 0
+fusectl /sys/fs/fuse/connections fusectl rw,relatime 0 0
+/dev/sr0 /run/media/nickschofield/VBOXADDITIONS_4.3.22_98236 iso9660 ro,nosuid,nodev,relatime,uid=1000,gid=1000,iocharset=utf8,mode=0400,dmode=0500 0 0
+/dev/mapper/6f1a927a-40a0-47ed-9bc9-f5a182eeea0d /test ext4 rw,seclabel,relatime,data=ordered 0 0
+
+---------------------------------------------------------------------
+
+FSTAB EXPLAINED
+
+UUID=b43917de-1e44-4474-92b9-5dfd6630e923 /test ext4  defaults  1 2
+
+device    Mount point     mount options     Dump value    Filesystem check order
+
