@@ -8,7 +8,7 @@ myApp.factory('Authentication', function($firebase, $firebaseAuth,
 
  auth.$onAuth(function(authUser){
  	if (authUser) {
- 		var ref = new Firebase(FIREBASE_URL + '/user/' + authUser.uid);
+ 		var ref = new Firebase(FIREBASE_URL + '/users/' + authUser.uid);
  		var user = $firebase(ref).$asObject();
  		$rootScope.currentUser = user;
  	} else {
@@ -28,6 +28,11 @@ var myObject = {
 		}); //$authWithPassword
 	  }, //login
 
+	  logout: function(user){
+	  	//$unauth is a firebase service
+	  	return auth.$unauth();
+	  },
+
 	register: function(user) {
 		return auth.$createUser({
 			email: user.email,
@@ -45,7 +50,14 @@ var myObject = {
 			}; //user info
 			firebaseUsers.$set(regUser.uid, userInfo);
 		}); //promise
-	  } //register
+	  }, //register
+
+	  requireAuth: function(){
+	  	return auth.$requireAuth();
+	  },
+	  	  waitForAuth: function(){
+	  	return auth.$waitForAuth();
+	  }//wait until user in authenticated
 
 	}; //myObject
 return myObject;
