@@ -929,7 +929,97 @@ fusectl /sys/fs/fuse/connections fusectl rw,relatime 0 0
 
 FSTAB EXPLAINED
 
-UUID=b43917de-1e44-4474-92b9-5dfd6630e923 /test ext4  defaults  1 2
+UUID=b43917de-1e44-4474-92b9-5dfd6630e923     /test             ext4              defaults              1           2
 
-device    Mount point     mount options     Dump value    Filesystem check order
+device                                      Mount point   Filesystem format     mount options     Dump value    Filesystem check order
+
+Dump Order:
+0 = not automatically saved to disk
+1 = automatically saved to disk by dump command
+
+Filesystem Check Order:
+
+0 = Not checked during boot process
+1 = Set root directory to this
+2 = All other local filesystems
+
+Mount Options:
+
+async     = Data is read and written asynchronously.
+atime     = The inode associated with each file is updated each time the file is
+            accessed.
+auto      = Searches through /etc/filesystems for the appropriate format for the
+            partition; normally associated with a floppy or removable drive.
+defaults  = Uses default mount options rw, suid, dev, exec, auto, nouser, and async.
+dev       = Permits access to character devices such as terminals or consoles and
+            block devices such as drives.
+exec      = Allows binaries (compiled programs) to be run on this filesystem.
+noatime   = The inode associated with each file is not updated when accessed.
+noauto    = Requires explicit mounting. Common option for CD and floppy drives.
+nodev     = Devices on this filesystem are not read or interpreted.
+noexec    = Binaries (compiled programs) cannot be run on this filesystem.
+nosuid    = Disallows setuid or setgid permissions on this filesystem.
+nouser    = Only root users are allowed to mount the specified filesystem.
+remount   = Remounts a currently mounted filesystem. Also an option for the
+            mount command.
+ro        = Mounts the filesystem as read-only.
+rw        = Mounts the filesystem as read/write.
+suid      = Allows setuid or setgid permissions on programs on this filesystem.
+sync      = Reads and writes are done at the same speed (synchronously) on this
+filesystem.
+user      = Allows nonroot users to mount this filesystem. By default, this also
+            sets the noexec, nosuid, and nodev options.
+____________________________________
+VIRTUAL FILESYSTEMS
+
+Virtual filesystems that book says are configured in /etc/fstab (not) but can be seen in mount command.
+
+tmpfs  /dev/shm    tmpfs    defaults          0 0
+devpts /dev/pts   devpts    gid=5,mode=620    0 0
+sysfs  /sys        sysfs    defaults          0 0
+proc   /proc       proc     defaults          0 0
+
+*tmpfs = RAM and Swap space
+
+*devpts = psedo terminals (??)
+
+*sysfs = info about system devices.
+
+[root@localhost ~]# ls -ltr /sys
+total 0
+drwxr-xr-x.   9 root root 0 Jul  6 08:53 kernel
+drwxr-xr-x. 136 root root 0 Jul  6 08:53 module
+drwxr-xr-x.   6 root root 0 Jul  6 08:53 fs
+drwxr-xr-x.  12 root root 0 Jul  6 08:53 devices
+drwxr-xr-x.  43 root root 0 Jul  6 08:53 class
+drwxr-xr-x.  24 root root 0 Jul  6 08:53 bus
+drwxr-xr-x.   4 root root 0 Jul  6 08:53 dev
+drwxr-xr-x.   2 root root 0 Jul  6 08:53 block
+drwxr-xr-x.   2 root root 0 Jul  6 08:53 power
+drwxr-xr-x.   5 root root 0 Jul  6 08:54 firmware
+drwxr-xr-x.   2 root root 0 Jul  6 11:20 hypervisor
+
+*proc = options for changing behaviour of kernel
+
+_______________________________________________________
+*MOUNT
+
+Mounting a CD/DVD directly:
+
+mount -t iso9660 /dev/sr0 /mnt
+
+*iso9660 is the filesystem type
+
+
+Can see guest additions mounted using blkid command:
+
+/dev/sr0: UUID="2015-02-12-15-58-24-00" LABEL="VBOXADDITIONS_4.3.22_98236" TYPE="iso9660"
+
+Change options so CD can be mounted by regular users:
+- read-only mode
+-doesn't try to automount it during boot process
+
+/dev/sr0 /cdrom auto ro,noauto,users 0 0
+
+
 
