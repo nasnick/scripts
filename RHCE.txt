@@ -1022,4 +1022,83 @@ Change options so CD can be mounted by regular users:
 /dev/sr0 /cdrom auto ro,noauto,users 0 0
 
 
+_________________________________________________________
+ *NFS AND *SAMBA
+
+ e.g. (a bit risky)
+
+ mount -t nfs server1.example.com:/pub /share
+
+Less risky - chuck in /etc/fstab:
+
+server1:/pub nfs rsize=8192,wsize=8192,timeo=14,intr,udp  0   0
+
+rsize, wsize = blocks of data to be read (bytes)
+
+timeo = client will wait 1.4 secs for request to be compeleted
+
+intr = can be interupted if NFS isn't responding
+
+use nfs4 if connection is using NFS v4
+
+
+*SAMBA
+
+A bit simpler...
+
+//server/pub  /share  cifs  rw,username=user,password=pass, 0 0
+
+If you want it a bit more secure then chuck
+
+username=user
+password=password
+
+in /etc/secret and use:
+
+//server/pub /share cifs rw,credentials=/etc/secret 0 0
+
+_________________________________________________________
+*AUTOFS DAEMON
+
+Default automounter options in this file:
+
+AUTOFS FILE
+
+[root@localhost ~]# cat /etc/sysconfig/autofs
+#
+# Init syatem options
+#
+# If the kernel supports using the autofs miscellanous device
+# and you wish to use it you must set this configuration option
+# to "yes" otherwise it will not be used.
+#
+USE_MISC_DEVICE="yes"
+#
+# Use OPTIONS to add automount(8) command line options that
+# will be used when the daemon is started.
+#
+#OPTIONS=""
+#
+##############################################
+
+**Supposed to have:
+
+- a TIMEOUT=300 but not there.
+
+- BROWSE_MODE=”no”
+
+
+AUTO.MASTER FILE
+
+Contains - which point to config files for each service:
+
+/misc /etc/auto.misc  (which refers to /etc/auto.misc)
+/net -hosts           (which refers to /etc/auto.net)
++auto.master          (which refers to /etc/auto.master?!?!)
+
+Shared dirs are mounted on /misc and /net
+
+
+
+
 
