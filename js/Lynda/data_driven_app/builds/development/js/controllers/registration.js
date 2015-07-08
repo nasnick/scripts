@@ -26,7 +26,6 @@ myApp.controller('RegistrationController',
 			$scope.message = error.message;
 			})
 	}; //register
-
 }); //RegistrationController
 
 
