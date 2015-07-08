@@ -929,7 +929,217 @@ fusectl /sys/fs/fuse/connections fusectl rw,relatime 0 0
 
 FSTAB EXPLAINED
 
-UUID=b43917de-1e44-4474-92b9-5dfd6630e923 /test ext4  defaults  1 2
+UUID=b43917de-1e44-4474-92b9-5dfd6630e923     /test             ext4              defaults              1           2
 
-device    Mount point     mount options     Dump value    Filesystem check order
+device                                      Mount point   Filesystem format     mount options     Dump value    Filesystem check order
+
+Dump Order:
+0 = not automatically saved to disk
+1 = automatically saved to disk by dump command
+
+Filesystem Check Order:
+
+0 = Not checked during boot process
+1 = Set root directory to this
+2 = All other local filesystems
+
+Mount Options:
+
+async     = Data is read and written asynchronously.
+atime     = The inode associated with each file is updated each time the file is
+            accessed.
+auto      = Searches through /etc/filesystems for the appropriate format for the
+            partition; normally associated with a floppy or removable drive.
+defaults  = Uses default mount options rw, suid, dev, exec, auto, nouser, and async.
+dev       = Permits access to character devices such as terminals or consoles and
+            block devices such as drives.
+exec      = Allows binaries (compiled programs) to be run on this filesystem.
+noatime   = The inode associated with each file is not updated when accessed.
+noauto    = Requires explicit mounting. Common option for CD and floppy drives.
+nodev     = Devices on this filesystem are not read or interpreted.
+noexec    = Binaries (compiled programs) cannot be run on this filesystem.
+nosuid    = Disallows setuid or setgid permissions on this filesystem.
+nouser    = Only root users are allowed to mount the specified filesystem.
+remount   = Remounts a currently mounted filesystem. Also an option for the
+            mount command.
+ro        = Mounts the filesystem as read-only.
+rw        = Mounts the filesystem as read/write.
+suid      = Allows setuid or setgid permissions on programs on this filesystem.
+sync      = Reads and writes are done at the same speed (synchronously) on this
+filesystem.
+user      = Allows nonroot users to mount this filesystem. By default, this also
+            sets the noexec, nosuid, and nodev options.
+____________________________________
+VIRTUAL FILESYSTEMS
+
+Virtual filesystems that book says are configured in /etc/fstab (not) but can be seen in mount command.
+
+tmpfs  /dev/shm    tmpfs    defaults          0 0
+devpts /dev/pts   devpts    gid=5,mode=620    0 0
+sysfs  /sys        sysfs    defaults          0 0
+proc   /proc       proc     defaults          0 0
+
+*tmpfs = RAM and Swap space
+
+*devpts = psedo terminals (??)
+
+*sysfs = info about system devices.
+
+[root@localhost ~]# ls -ltr /sys
+total 0
+drwxr-xr-x.   9 root root 0 Jul  6 08:53 kernel
+drwxr-xr-x. 136 root root 0 Jul  6 08:53 module
+drwxr-xr-x.   6 root root 0 Jul  6 08:53 fs
+drwxr-xr-x.  12 root root 0 Jul  6 08:53 devices
+drwxr-xr-x.  43 root root 0 Jul  6 08:53 class
+drwxr-xr-x.  24 root root 0 Jul  6 08:53 bus
+drwxr-xr-x.   4 root root 0 Jul  6 08:53 dev
+drwxr-xr-x.   2 root root 0 Jul  6 08:53 block
+drwxr-xr-x.   2 root root 0 Jul  6 08:53 power
+drwxr-xr-x.   5 root root 0 Jul  6 08:54 firmware
+drwxr-xr-x.   2 root root 0 Jul  6 11:20 hypervisor
+
+*proc = options for changing behaviour of kernel
+
+_______________________________________________________
+*MOUNT
+
+Mounting a CD/DVD directly:
+
+mount -t iso9660 /dev/sr0 /mnt
+
+*iso9660 is the filesystem type
+
+
+Can see guest additions mounted using blkid command:
+
+/dev/sr0: UUID="2015-02-12-15-58-24-00" LABEL="VBOXADDITIONS_4.3.22_98236" TYPE="iso9660"
+
+Change options so CD can be mounted by regular users:
+- read-only mode
+-doesn't try to automount it during boot process
+
+/dev/sr0 /cdrom auto ro,noauto,users 0 0
+
+
+_________________________________________________________
+ *NFS AND *SAMBA
+
+ e.g. (the following is a bit risky)
+
+ mount -t nfs server1.example.com:/pub /share
+
+Less risky - chuck in /etc/fstab:
+
+server1:/pub nfs rsize=8192,wsize=8192,timeo=14,intr,udp  0   0
+
+rsize, wsize = blocks of data to be read (bytes)
+
+timeo = client will wait 1.4 secs for request to be compeleted
+
+intr = can be interupted if NFS isn't responding
+
+use nfs4 if connection is using NFS v4
+
+
+*SAMBA
+
+A bit simpler...
+
+//server/pub  /share  cifs  rw,username=user,password=pass, 0 0
+
+If you want it a bit more secure then chuck
+
+username=user
+password=password
+
+in /etc/secret and use:
+
+//server/pub /share cifs rw,credentials=/etc/secret 0 0
+
+_________________________________________________________
+*AUTOFS DAEMON
+
+Default automounter options in this file:
+
+AUTOFS FILE
+
+[root@localhost ~]# cat /etc/sysconfig/autofs
+#
+# Init syatem options
+#
+# If the kernel supports using the autofs miscellanous device
+# and you wish to use it you must set this configuration option
+# to "yes" otherwise it will not be used.
+#
+USE_MISC_DEVICE="yes"
+#
+# Use OPTIONS to add automount(8) command line options that
+# will be used when the daemon is started.
+#
+#OPTIONS=""
+#
+##############################################
+
+**Supposed to have:
+
+- a TIMEOUT=300 but not there.
+
+- BROWSE_MODE=”no”
+
+
+AUTO.MASTER FILE
+
+Contains - which point to config files for each service:
+
+/misc /etc/auto.misc  (which refers to /etc/auto.misc)
+/net -hosts           (which refers to /etc/auto.net)
++auto.master          (which refers to /etc/auto.master?!?!)
+
+Shared dirs are mounted on /misc and /net
+
+_________________________________________________________
+AUTOMOUNTER CONFIG FILE
+
+**CD active by default with a 300 second timeout
+
+[root@localhost ~]# cat /etc/auto.misc
+#
+# This is an automounter map and it has the following format
+# key [ -mount-options-separated-by-comma ] location
+# Details may be found in the autofs(5) manpage
+
+cd    -fstype=iso9660,ro,nosuid,nodev :/dev/cdrom
+
+# the following entries are samples to pique your imagination
+#linux    -ro,soft,intr   ftp.example.org:/pub/linux
+#boot   -fstype=ext2    :/dev/hda1
+#floppy   -fstype=auto    :/dev/fd0
+#floppy   -fstype=ext2    :/dev/fd0
+#e2floppy -fstype=ext2    :/dev/fd0
+#jaz    -fstype=ext2    :/dev/sdc1
+#removable  -fstype=ext2    :/dev/hdd
+#######################################################
+
+This allows /misc/linux (auto mounted on misc & net dirs) mount point from a share NFS dir 
+/pub/linux from ftp.example.org
+
+linux    -ro,soft,intr   ftp.example.org:/pub/linux
+
+For this line - auto means /etc/filesystems will be searched for what's on your disk
+
+#floppy   -fstype=auto    :/dev/fd0
+
+[root@localhost ~]# cat /etc/filesystems 
+xfs
+ext4
+ext3
+ext2
+nodev proc
+nodev devpts
+iso9660
+vfat
+hfs
+hfsplus
+*
 
