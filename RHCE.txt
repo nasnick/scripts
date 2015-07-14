@@ -341,6 +341,10 @@ lvresize/ lvreduce
 
 lvresize -L 2000 /dev/sdb1/secretSanta
 
+If you add another disk using vgextend vg_group01 /dev/sdb2 then use lvresize to boost that sucker up. E.g. if 4G to start with then add another 500MB disk then:
+
+lvresize -L 4550 /dev/mockinbird/crow
+
 _________________________________________________________________
 Remove the Disk That was added to volume group
 
