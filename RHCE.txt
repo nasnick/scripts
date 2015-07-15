@@ -45,7 +45,6 @@ Filename        Type    Size  Used  Priority
 /dev/dm-1                               partition 839676  137848  -1
 /dev/sde4                               partition 975868  0 -2
 
-
 ==========================================================================================
 LOGICAL VOLUME MANAGER
 
@@ -71,7 +70,6 @@ Physical Volumme
   Free PE               10
   Allocated PE          1912
   PV UUID               qZw6wm-o0kt-Fcmq-iajl-NQEP-H95Z-Xi3zjg
-
 
 Logical Volume
 
