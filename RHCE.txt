@@ -45,8 +45,20 @@ Filename        Type    Size  Used  Priority
 /dev/dm-1                               partition 839676  137848  -1
 /dev/sde4                               partition 975868  0 -2
 
-
 ==========================================================================================
+REST THE PURPOSE USING *PARTED
+
+This changes the flag to LVM.
+
+  # parted /dev/sdb
+Run the print command. The flags column for existing partitions should be empty. Now you’ll set that flag with the set command. From the commands shown here, the flags are set to use that first partition of the second drive as an LVM partition:
+(parted) set 
+Partition number? 1 
+Flag to Invert? lvm 
+New state? [on]/off on
+
+--------------------------------------------
+
 LOGICAL VOLUME MANAGER
 
 Physical Volumes >> Volume Group >> Logical Volumes
@@ -71,7 +83,6 @@ Physical Volumme
   Free PE               10
   Allocated PE          1912
   PV UUID               qZw6wm-o0kt-Fcmq-iajl-NQEP-H95Z-Xi3zjg
-
 
 Logical Volume
 
@@ -575,7 +586,7 @@ Var mounted on /dev/sdb1
 Go into runleve 1:
 init 1
 
-unmount /var (would be in the fstab)
+unmount /var (would be in the *fstab)
 
 fsck -t ext4 /dev/sdb1
 
@@ -600,7 +611,7 @@ tune2fs -j /dev/sdb1
 
 mount -o remount,rw /dev/sdb1
 
-4/ Change entry in fstab file from ext2 to ext3
+4/ Change entry in *fstab file from ext2 to ext3
 
 5/ Change back
 
@@ -781,7 +792,7 @@ Don't mount these guys on seperate disk:
 
 
 ====================================================================================
-***********************************    LUKS     ************************************
+***********************************    *LUKS     ************************************
 ====================================================================================
 
 See if the required module is loaded - yep looking good:
@@ -1147,9 +1158,76 @@ hfsplus
 *
 
 
+/////////////////////////////////////////////
+==================LAB1=======================
+/////////////////////////////////////////////
+
+VGs and LVs both have UUIDs.
+
+**Strange - when I used parted to make the partition, when I use the dump2gfs command to try and get the UUID it gives me this:
+
+[root@localhost ~]# dumpe2fs /dev/sdf3
+dumpe2fs 1.42.9 (28-Dec-2013)
+dumpe2fs: Bad magic number in super-block while trying to open /dev/sdf3
+Couldn't find valid filesystem superblock.
+
+But when I do mkfs.ext4 /dev/sdf2 and run it again it gives all the info.
 
 
 
+____________________________________________________________________________________
+ADDITIONAL NOTES
+
+ntfsprogs - supports the mounting of NTFS filesystems
+
+[root@localhost ~]# mkswap /dev/sdf4
+Setting up swapspace version 1, size = 976892 KiB
+no label, UUID=76431b36-f2c7-4f45-8422-e64cde9efca3
+[root@localhost ~]# swapon /dev/sdf4
+
+/etc/fstab:
+
+UUID=76431b36-f2c7-4f45-8422-e64cde9efca3   swap    swap  defaults  0 0
+
+/////////////////////////////////////////////
+==================LAB2=======================
+/////////////////////////////////////////////
+
+Wiped partition to begin again:
+
+wipefs -a --force "/dev/sdf"
+
+Removed partition from swap (cat /proc/swaps):
+
+swapoff /dev/sdf4
+
+Had to reboot and in rescue mode comment out the fstab entries followed by another reboot.
+
+1/ do the parted thing
+
+2/ pvcreate /dev/sdf1 etc.
+
+3/ vgcreate lab2 /dev/sdf1 etc.
+
+4/ lv create -L 2500 /dev/lab2/jolly_hockeysticks
+
+5/ Rename vg: 
+
+vgrename /dev/lab2 /dev/rad2
+
+6/ Rename lg:
+
+[root@localhost ~]# lvrename /dev/rad2/jolly_hockeystick /dev/rad2/sk8ordi3
+  Renamed "jolly_hockeystick" to "sk8ordi3" in volume group "rad2"
+
+7/ Make fs:
+
+mkfs.ext4 /dev/rad2/sk8ordi3
+
+mount /dev/rad2/sk8ordi3 /mnt/sk8ordi3
+
+[root@localhost ~]# mount | grep sk8
+/dev/mapper/rad2-sk8ordi3 on /mnt/sk8ordi3 type ext4 (rw,relatime,seclabel,data=ordered)
 
 
 ====================================================================================
