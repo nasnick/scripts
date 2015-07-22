@@ -792,7 +792,7 @@ Don't mount these guys on seperate disk:
 
 
 ====================================================================================
-***********************************    *LUKS     ************************************
+***********************************    **LUKS     ************************************
 ====================================================================================
 
 See if the required module is loaded - yep looking good:
@@ -868,13 +868,13 @@ lrwxrwxrwx. 1 root root       7 Jul  3 16:26 centos-root -> ../dm-0
 lrwxrwxrwx. 1 root root       7 Jul  3 16:26 centos-swap -> ../dm-1
 lrwxrwxrwx. 1 root root       7 Jul  3 16:35 6f1a927a-40a0-47ed-9bc9-f5a182eeea0d -> ../dm-2
 
-**Don't have to call it the UUID - could do do:
+**Don't have to call it the UUID - could do:
 
 cryptsetup luksOpen /dev/sdf test
 
 5/ Make filesystem on the volume:
 
-mkfs.ext4 /dev/sdf 6f1a927a-40a0-47ed-9bc9-f5a182eeea0d
+mkfs.ext4 /dev/mzpper/6f1a927a-40a0-47ed-9bc9-f5a182eeea0d
 
 6/ Put in /etc/fstab:
 
@@ -884,7 +884,7 @@ The UUID above isn't the UUID of the filesystem. To get that:
 dumpe2fs 1.42.9 (28-Dec-2013)
 Filesystem UUID:          b43917de-1e44-4474-92b9-5dfd6630e923
 
-*BLKID
+**BLKID
 
 Shows UUIDs for devices:
 
@@ -901,7 +901,7 @@ Shows UUIDs for devices:
 /dev/mapper/centos-swap: UUID="d9853317-c9ac-4883-a83c-1cc540614813" TYPE="swap" 
 /dev/mapper/6f1a927a-40a0-47ed-9bc9-f5a182eeea0d: UUID="b43917de-1e44-4474-92b9-5dfd6630e923" TYPE="ext4" 
 
-*MTAB
+**MTAB
 
 Verify how partitions are mounted in /etc/mstab
 
@@ -940,8 +940,7 @@ fusectl /sys/fs/fuse/connections fusectl rw,relatime 0 0
 /dev/mapper/6f1a927a-40a0-47ed-9bc9-f5a182eeea0d /test ext4 rw,seclabel,relatime,data=ordered 0 0
 
 ---------------------------------------------------------------------
-
-FSTAB EXPLAINED
+**FSTAB EXPLAINED
 
 UUID=b43917de-1e44-4474-92b9-5dfd6630e923     /test             ext4              defaults              1           2
 
@@ -1229,6 +1228,45 @@ mount /dev/rad2/sk8ordi3 /mnt/sk8ordi3
 [root@localhost ~]# mount | grep sk8
 /dev/mapper/rad2-sk8ordi3 on /mnt/sk8ordi3 type ext4 (rw,relatime,seclabel,data=ordered)
 
+/////////////////////////////////////////////
+==================LAB3=======================
+/////////////////////////////////////////////
+
+Resize that son of a gun:
+
+[root@localhost ~]# lvextend -L 2850 /dev/rad2/sk8ordi3
+  Rounding size to boundary between physical extents: 2.79 GiB
+  Size of logical volume rad2/sk8ordi3 changed from 2.73 GiB (700 extents) to 2.79 GiB (713 extents).
+  Logical volume sk8ordi3 successfully resized
+
+/////////////////////////////////////////////
+==================LAB4=======================
+/////////////////////////////////////////////
+
+cryptsetup luksFormat /dev/rad2/sk8ordi3
+
+Enter password
+
+Get info: 
+
+cryptsetup luksDump /dev/rad2/sk8ordi3
+
+Get the UUID:
+
+[root@localhost ~]# cryptsetup luksUUID /dev/rad2/sk8ordi3
+618d97b8-f49d-4363-be35-3537dba1ec58
+
+Add UUID to it:
+
+cryptsetup luksOpen /dev/rad2/sk8ordi3 618d97b8-f49d-4363-be35-3537dba1ec58
+
+mkfs.ext4 /dev/mapper/0b74f243-4610-49f4-8a15-ba71219dd6c9
+
+Get the UUID for the fstab:
+
+[root@localhost ~]# dumpe2fs /dev/mapper/0b74f243-4610-49f4-8a15-ba71219dd6c9 | grep -i UUID
+dumpe2fs 1.42.9 (28-Dec-2013)
+Filesystem UUID:          fb2c48b4-3acc-4c24-a94d-f41d3088db70
 
 ====================================================================================
 ****************************** PACKAGE MANAGEMENT **********************************
