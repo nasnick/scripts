@@ -2,6 +2,10 @@
 
 A=$(find . -maxdepth 1 -type f -not -name ".*" | grep Racoon[2-7])
 
+if [ -z "$A" ]; then
+  exit 1
+fi
+
 for i in $A; do
   md5sum $i >> checksumoriginal.txt
   cat  checksumoriginal.txt | sort  > checksumoriginalsorted.txt

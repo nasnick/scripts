@@ -4,7 +4,11 @@
 # 120 days are used in the find command because the backup script finds and backs up files that
 # are 2 months old - so need to build a list based on creation date minus 2 months.
 
-FILES_TO_BACKUP=$(find /syslog_archive/prod-tdx-01/portal/ -maxdepth 1 -type f -not -name ".*" -ctime  +120)
+REMOTE_FOLDER=/mnt/archive_to_NAS/syslog_archive/prod-tdx-01/portal/
+BACKUP_FOLDER=/mnt/backups/nfs/tdx-backups/prod-tdx-01/syslog_backups/
+FILES_TO_BACKUP=$(find $REMOTE_FOLDER -maxdepth 1 -type f -not -name ".*" -ctime  +120)
+
+REMOTE_FOLDER=/mnt/archive_to_NAS/syslog_archive/prod-tdx-01/portal/
 
 # Check if there are any files to copy and exit if there are none
 
@@ -17,7 +21,7 @@ fi
 for i in $FILES_TO_BACKUP; do
   md5sum $i >> checksumoriginal.txt
   sed 's/.\///g'  checksumoriginal.txt | sort  > checksumoriginalsorted.txt
-    cp  $i /tdx-backups/prod-tdx-01/syslog_archive
+    cp $i $BACKUP_FOLDER
 done
 
 #Get an md5sum of copied files
@@ -31,7 +35,7 @@ done
 
 # Look for differences in the checksum of the files
 
-FILE_DIFF=$(diff -s  checksumoriginalsortedtxt checksumcopiedsorted.txt)
+FILE_DIFF=$(diff -s  checksumoriginalsorted.txt checksumcopiedsorted.txt)
 
 # Check for exit status
 
@@ -41,12 +45,12 @@ DIFF=$(echo "$?")
 
 if [ "$DIFF" = "0" ]; then
   for i in $FILES_TO_BACKUP; do
-    rm $i
+    rm $REMOTE_FOLDER/$i
   done
 elif [ "$DIFF" != "0" ]; then
   echo "Checksum didn't match up - check these files: $FILE_DIFF"
 fi
 
-Remove checksum log files
+#Remove checksum log files
 
 rm checksum*
