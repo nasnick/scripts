@@ -1,7 +1,7 @@
 ====================================================================================
 ******************************* PARTITIONS & LVM ***********************************
 ====================================================================================
-PARTED
+>>> PARTED <<<
 
 parted /dev/sdb1
 
@@ -1271,5 +1271,83 @@ Filesystem UUID:          fb2c48b4-3acc-4c24-a94d-f41d3088db70
 ====================================================================================
 ****************************** PACKAGE MANAGEMENT **********************************
 ====================================================================================
+################
+RPM
 
+Download from FTP server:
 
+rpm -ivh ftp://username:password@hostname:port/path/to/remote/package/file.rpm
+
+i = install, v = verbose, h = hash marks
+
+# rpm -ivh ftp://mjang:Ila451MS@192.168.122.1/pub/inst/policycoreutils-gui-
+2.0.83-19.1.el6.x86_64.rpm
+
+SECURITY
+
+GPG = GNU Privacy Guard (like PGP)
+
+[root@localhost ~]# ls /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-
+RPM-GPG-KEY-CentOS-7          RPM-GPG-KEY-CentOS-Debug-7    RPM-GPG-KEY-CentOS-Testing-7
+
+Stored in RPM database:
+
+[root@localhost ~]# rpm -qa gpg-pubkey
+gpg-pubkey-f4a80eb5-53a7ff4b
+
+In red hat there are 5 keys in /etc/pki/rpm-gpg:
+
+GPG Key                             Description
+RPM-GPG-KEY-redhat-beta             Packages built for the RHEL 6 beta
+RPM-GPG-KEY-redhat-legacy-former    Packages for pre–November 2006 releases
+                                    (and updates)
+RPM-GPG-KEY-redhat-legacy-release   Packages for post–November 2006 releases
+RPM-GPG-KEY-redhat-legacy-rhx       Packages associated with Red Hat Exchange
+RPM-GPG-KEY-redhat-release          Released packages for RHEL 6
+
+If you see an available update for a kernel RPM, the temptation is to run the:
+rpm -U newkernel command
+
+DON'T DO IT!
+
+Install kernel alongside new kernel:
+
+rpm -ivh newkernel
+
+or
+
+yum install kernel
+
+Fair bit O' junk in the /boot folder:
+
+[root@localhost ~]# ls -ltr /boot
+total 87504
+-rw-------. 1 root root  2881257 Mar  7 00:45 System.map-3.10.0-229.el7.x86_64
+-rw-r--r--. 1 root root   123838 Mar  7 00:45 config-3.10.0-229.el7.x86_64
+-rwxr-xr-x. 1 root root  5029136 Mar  7 00:45 vmlinuz-3.10.0-229.el7.x86_64
+-rw-r--r--. 1 root root   240039 Mar  7 00:47 symvers-3.10.0-229.el7.x86_64.gz
+drwxr-xr-x. 2 root root       26 May 23 13:19 grub
+-rw-r--r--. 1 root root   589469 May 23 13:20 initrd-plymouth.img
+-rw-r--r--. 1 root root 39837247 May 23 13:23 initramfs-0-rescue-f79ec697463e4fe69fcf177a2ebc3ebd.img
+-rwxr-xr-x. 1 root root  5029136 May 23 13:23 vmlinuz-0-rescue-f79ec697463e4fe69fcf177a2ebc3ebd
+-rw-r--r--. 1 root root 17690018 May 23 13:24 initramfs-3.10.0-229.el7.x86_64.img
+drwxr-xr-x. 6 root root      104 May 23 13:24 grub2
+-rw-r--r--. 1 root root 18172830 Jul 28 17:00 initramfs-3.10.0-229.el7.x86_64kdump.img
+
+/boot/config-3.10.0-229.el7.x86_64 has heaps of kernel config settings
+
+initramfs-*   = initial RAM disk filesystem - called during boot. Still a bit of the ol' mystery around this
+
+initrd-*      = root filesystem for kernel crash dumps
+
+symvers-*     = list of modules
+
+System.map-*  = map of system names for variables and functions with location in memory
+
+vmlinuz-*     = the gosh damn kernel
+
+The book talks about /boot/grub/grub.conf but all I can find is /boot/grub2/grub.cfg... systemd has changed this.
+
+>>> PACKAGE QUERIES <<<
+
+pg 13 (chpt 7)
