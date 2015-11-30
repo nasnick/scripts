@@ -13,8 +13,8 @@ for MOUNT in $RD_OPTION_MOUNT_POINT;do
     NUMBER_OF_FILES_TO_COPY=$(ls $MOUNT | wc -l)
    
     for i in $FOLDER_CONTENTS; do
-      #sudo cp $RD_OPTION_MOUNT_POINT/$i.$DATE.tz $RD_OPTION_BACKUP_DIR
-      sudo cp $MOUNT/$i $RD_OPTION_BACKUP_DIR
+      #cp $RD_OPTION_MOUNT_POINT/$i.$DATE.tz $RD_OPTION_BACKUP_DIR
+      cp $MOUNT/$i $RD_OPTION_BACKUP_DIR
     done
      
      ls -ltr $MOUNT | awk '{print $5,$9}' | tail -n +2 >> archive_files_remote.txt 
