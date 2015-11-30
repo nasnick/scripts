@@ -24,9 +24,9 @@ do
                                
                                 # Unmount if already mounted
                                 if [ "$MOUNTED" -eq "1" ];then
-                                                sudo umount $MOUNT && sudo mount $MOUNT
+                                                umount $MOUNT && mount $MOUNT
                                 else
-                                                sudo mount $MOUNT
+                                                mount $MOUNT
                                 fi
                
                                 # Check if the mount was successful or not
@@ -43,7 +43,7 @@ do
                 0)
  
                                 if [ "$MOUNTED" -eq "1" ]; then
-                                                sudo umount $MOUNT
+                                                umount $MOUNT
                                 fi
                                                                                
                                 MOUNTED=$(mount | grep $MOUNT | wc -l)
