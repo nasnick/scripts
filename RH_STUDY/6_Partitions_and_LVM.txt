@@ -1,0 +1,548 @@
+
+
+====================================================================================
+******************************* PARTITIONS & LVM ***********************************
+====================================================================================
+>>> PARTED <<<
+
+parted /dev/sdb1
+
+> mkpart
+> primary
+> linux-swap
+> Start?0
+> end?2048m
+
+Created 4 partitions on a 5GB disk:
+
+[root@localhost ~]# parted /dev/sde
+GNU Parted 3.1
+Using /dev/sde
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print                                                            
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sde: 5369MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End     Size    Type     File system     Flags
+ 1      1049kB  1000MB  999MB   primary  ext4
+ 2      1000MB  3000MB  2000MB  primary
+ 3      3000MB  4000MB  1000MB  primary
+ 4      4000MB  5000MB  999MB   primary  linux-swap(v1)
+
+
+Setting up the swap space:
+
+[root@localhost ~]# mkswap /dev/sde4
+Setting up swapspace version 1, size = 975868 KiB
+no label, UUID=3d523bcb-0502-4b9c-8a77-65bb74ef5da4
+[root@localhost ~]# swapon /dev/sde4
+
+View swaps on the system:
+
+[root@localhost ~]# cat /proc/swaps
+Filename        Type    Size  Used  Priority
+/dev/dm-1                               partition 839676  137848  -1
+/dev/sde4                               partition 975868  0 -2
+
+==========================================================================================
+REST THE PURPOSE USING *PARTED
+
+This changes the flag to LVM.
+
+  # parted /dev/sdb
+Run the print command. The flags column for existing partitions should be empty. Now you’ll set that flag with the set command. From the commands shown here, the flags are set to use that first partition of the second drive as an LVM partition:
+(parted) set 
+Partition number? 1 
+Flag to Invert? lvm 
+New state? [on]/off on
+
+--------------------------------------------
+
+LOGICAL VOLUME MANAGER
+
+Physical Volumes >> Volume Group >> Logical Volumes
+
+/dev/sdb1        >> vg_group01   >> secretSanta
+
+Physical         Logical
+extents          extents
+
+Physical Extents = YOUR DATA
+
+Physical Volumme
+
+[root@localhost ~]# pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sda2
+  VG Name               centos
+  PV Size               7.51 GiB / not usable 3.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              1922
+  Free PE               10
+  Allocated PE          1912
+  PV UUID               qZw6wm-o0kt-Fcmq-iajl-NQEP-H95Z-Xi3zjg
+
+Logical Volume
+
+LVM has two units: physical extents and logical extents. 
+
+Physical extents are used when dealing with volume groups, and logical extents, with logical volumes. The logical extents always map back to a physical extent
+
+__________________________________________________________________
+CREATING A LVM PARTITION
+
+*PVCREATE
+
+1/ Initialise disk to be used for a physical volume:
+
+[root@localhost ~]# pvcreate /dev/sdb1
+  Physical volume "/dev/sdb1" successfully created
+
+*PVDISPLAY
+
+VIEW: 
+
+[root@localhost ~]# pvdisplay /dev/sdb1
+  "/dev/sdb1" is a new physical volume of "2.79 GiB"
+  --- NEW Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name               
+  PV Size               2.79 GiB
+  Allocatable           NO
+  PE Size               0   
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               b8fbTO-FgQa-PFAl-8H0p-hk2e-lWAO-fMcN2C
+
+__________________________________________________________________
+  2/ Create volume group and add physical disk to it:
+
+[root@localhost ~]# vgcreate vg_group01 /dev/sdb1
+  Volume group "vg_group01" successfully created
+
+VIEW:
+
+[root@localhost ~]# vgdisplay -v vg_group01
+    Using volume group(s) on command line.
+  --- Volume group ---
+  VG Name               vg_group01
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  1
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               2.79 GiB
+  PE Size               4.00 MiB
+  Total PE              715
+  Alloc PE / Size       0 / 0   
+  Free  PE / Size       715 / 2.79 GiB
+  VG UUID               ArhzVv-Isra-obOu-Mtz9-3Hx2-YpDS-Se4p2P
+   
+  --- Physical volumes ---
+  PV Name               /dev/sdb1     
+  PV UUID               b8fbTO-FgQa-PFAl-8H0p-hk2e-lWAO-fMcN2C
+  PV Status             allocatable
+  Total PE / Free PE    715 / 715
+
+  Physical volumes are broken down into physical extents - 4MB by default.
+
+
+__________________________________________________________________
+3/ Create logical volume
+
+[root@localhost ~]# lvcreate -L 2790 vg_group01
+  Rounding up size to full physical extent 2.73 GiB
+  Logical volume "lvol0" created.
+
+==========================================================================================
+VIEW:
+
+[root@localhost ~]# lvdisplay vg_group01
+  --- Logical volume ---
+  LV Path                /dev/vg_group01/lvol0
+  LV Name                lvol0
+  VG Name                vg_group01
+  LV UUID                lZwM2Y-TxI0-43Ib-7Slx-4ot4-aVNk-CfaCd9
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2015-06-09 18:27:22 +1200
+  LV Status              available
+  # open                 0
+  LV Size                2.73 GiB
+  Current LE             698
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+
+__________________________________________________________________
+See PHYSICAL >> VOLUME >> LOGICAL
+
+**See dem physical extents down the bottom?
+
+[root@localhost ~]# vgdisplay -v vg_group01
+    Using volume group(s) on command line.
+  --- Volume group ---
+  VG Name               vg_group01
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               2.79 GiB
+  PE Size               4.00 MiB
+  Total PE              715
+  Alloc PE / Size       698 / 2.73 GiB
+  Free  PE / Size       17 / 68.00 MiB
+  VG UUID               ArhzVv-Isra-obOu-Mtz9-3Hx2-YpDS-Se4p2P
+   
+  --- Logical volume ---
+  LV Path                /dev/vg_group01/lvol0
+  LV Name                lvol0
+  VG Name                vg_group01
+  LV UUID                lZwM2Y-TxI0-43Ib-7Slx-4ot4-aVNk-CfaCd9
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2015-06-09 18:27:22 +1200
+  LV Status              available
+  # open                 0
+  LV Size                2.73 GiB
+  Current LE             698
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+   
+  --- Physical volumes ---
+  PV Name               /dev/sdb1     
+  PV UUID               b8fbTO-FgQa-PFAl-8H0p-hk2e-lWAO-fMcN2C
+  PV Status             allocatable
+  Total PE / Free PE    715 / 17
+
+Here's where it lives:
+
+  [root@localhost ~]# ls -ltr /dev | grep vg
+  crw-------. 1 root root     10,  63 Jun  9 17:49 vga_arbiter
+  drwxr-xr-x. 2 root root          60 Jun  9 18:27 vg_group01
+
+=================================================================================
+RENAME DAT thang:
+
+  Rename all in one golden stroke ya'll:
+
+  [root@localhost ~]# lvrename /dev/vg_group01/lvol0 /dev/vg_group01/SecretSanta
+  Renamed "lvol0" to "SecretSanta" in volume group "vg_group01"
+
+
+[root@localhost ~]# lvdisplay vg_group01
+  --- Logical volume ---
+  LV Path                /dev/vg_group01/SecretSanta
+
+=================================================================================
+RESIZE THAT THiNG
+
+When you resize a logical volume that already contains a formatted file system, you
+need to grow the file system into the new space that becomes available
+__________________________________________________________________
+Resize dat sucker to be smaller:
+
+[root@localhost ~]# lvresize -L 2000 /dev/vg_group01/SecretSanta
+  WARNING: Reducing active logical volume to 1.95 GiB
+  THIS MAY DESTROY YOUR DATA (filesystem etc.)
+Do you really want to reduce SecretSanta? [y/n]: y
+
+  Size of logical volume vg_group01/SecretSanta changed from 2.73 GiB (698 extents) to 1.95 GiB (500 extents).
+  Logical volume SecretSanta successfully resized
+
+_________________________________________________________________
+  Chuck a few extra extends on dere:
+
+  [root@localhost ~]# lvextend -L +200 /dev/vg_group01/SecretSanta 
+  Size of logical volume vg_group01/SecretSanta changed from 1.95 GiB (500 extents) to 2.15 GiB (550 extents).
+  Logical volume SecretSanta successfully resized
+
+=================================================================================
+ADD ANOTHER PHYSICAL VOLUME TO EXTEND VOLUME GROUP
+
+[root@localhost ~]# pvcreate /dev/sdb2
+  Physical volume "/dev/sdb2" successfully created
+
+_________________________________________________________________
+Chuck it in the volume group:
+
+[root@localhost ~]# vgextend vg_group01 /dev/sdb2
+  Volume group "vg_group01" successfully extended
+
+_________________________________________________________________
+Now we getting somewhere - look at the bottom:
+
+(also   VG Size               6.00 GiB)
+
+[root@localhost ~]# vgdisplay -v vg_group01 
+    Using volume group(s) on command line.
+  --- Volume group ---
+  VG Name               vg_group01
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  6
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               0
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               6.00 GiB
+  PE Size               4.00 MiB
+  Total PE              1535
+  Alloc PE / Size       550 / 2.15 GiB
+  Free  PE / Size       985 / 3.85 GiB
+  VG UUID               ArhzVv-Isra-obOu-Mtz9-3Hx2-YpDS-Se4p2P
+   
+  --- Logical volume ---
+  LV Path                /dev/vg_group01/SecretSanta
+  LV Name                SecretSanta
+  VG Name                vg_group01
+  LV UUID                lZwM2Y-TxI0-43Ib-7Slx-4ot4-aVNk-CfaCd9
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2015-06-09 18:27:22 +1200
+  LV Status              available
+  # open                 0
+  LV Size                2.15 GiB
+  Current LE             550
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+   
+  --- Physical volumes ---
+  PV Name               /dev/sdb1     
+  PV UUID               b8fbTO-FgQa-PFAl-8H0p-hk2e-lWAO-fMcN2C
+  PV Status             allocatable
+  Total PE / Free PE    715 / 165
+   
+  PV Name               /dev/sdb2     
+  PV UUID               e9VSlX-dDVz-yd1p-mdBR-OZeJ-9hzJ-zp2fyw
+  PV Status             allocatable
+  Total PE / Free PE    820 / 820
+
+
+_________________________________________________________________
+lvresize/ lvreduce
+
+lvresize -L 2000 /dev/sdb1/secretSanta
+
+If you add another disk using vgextend vg_group01 /dev/sdb2 then use lvresize to boost that sucker up. E.g. if 4G to start with then add another 500MB disk then:
+
+lvresize -L 4550 /dev/mockinbird/crow
+
+_________________________________________________________________
+Remove the Disk That was added to volume group
+
+vgreduce vg_group01 /dev/sdb2
+
+=================================================================================
+MIGRATING DATA
+
+Physical Extents = YOUR DATA
+
+So we have:
+
+[root@localhost ~]# tree /dev/vg_group01/
+/dev/vg_group01/
+└── SecretSanta -> ../dm-2
+
+with /dev/sdb1 and /dev/sdb2 added.. 
+
+Can copy from one to the other with pvmove command so if /dev/sdb2 is dying:
+
+pvmove /dev/sdb1 /dev/sdb2
+
+
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1     5859375     2929687+  83  Linux
+/dev/sdb2         5859376    12582911     3361768   83  Linux
+
+
+=================================================================================
+REMOVING DATA/ LVs and PVs
+
+_________________________________________________________________
+1/ Remove Logical Volume
+
+lvremove /dev/vg_group01/secretSanta
+
+
+2/ Remove Volume Group
+
+vgremove vg_group01
+
+
+Remove Both LV and VG Together
+
+vgremove -f vg_group01
+
+3/ Wipe Out Physical Disks
+
+pvremove /dev/sdb1
+
+=================================================================================
+SETTING UP RAID
+
+RAID 1: Mirroring
+RAID 5: Striping with parity (25% used for parity bit)
+
+Add 3 partitions into the array:
+
+[root@localhost ~]# mdadm -Cv /dev/md0 --level=5 -n3 /dev/sdd1 /dev/sdd2 /dev/sde1
+
+mdadm: You have listed more devices (4) than are in the array(3)!
+[root@localhost ~]# mdadm -Cv /dev/md0 --level=5 -n3 /dev/sdd1 /dev/sdd2 /dev/sde1 
+mdadm: layout defaults to left-symmetric
+mdadm: layout defaults to left-symmetric
+mdadm: chunk size defaults to 512K
+mdadm: size set to 1951744K
+mdadm: largest drive (/dev/sdd2) exceeds size (1951744K) by more than 1%
+
+Continue creating array? yes
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md0 started.
+
+_________________________________________________________________
+Created successfully:
+
+[root@localhost ~]# mdadm -D /dev/md0
+/dev/md0:
+        Version : 1.2
+  Creation Time : Mon Jun 15 17:03:00 2015
+     Raid Level : raid5
+     Array Size : 3903488 (3.72 GiB 4.00 GB)
+  Used Dev Size : 1951744 (1906.32 MiB 1998.59 MB)
+   Raid Devices : 3
+  Total Devices : 3
+    Persistence : Superblock is persistent
+
+    Update Time : Mon Jun 15 17:03:11 2015
+          State : clean 
+ Active Devices : 3
+Working Devices : 3
+ Failed Devices : 0
+  Spare Devices : 0
+
+         Layout : left-symmetric
+     Chunk Size : 512K
+
+           Name : localhost.localdomain:0  (local to host localhost.localdomain)
+           UUID : 855daf19:12025a2e:b22f4263:b673e5a3
+         Events : 18
+
+    Number   Major   Minor   RaidDevice State
+       0       8       49        0      active sync   /dev/sdd1
+       1       8       50        1      active sync   /dev/sdd2
+       3       8       65        2      active sync   /dev/sde1
+
+Check status
+
+_________________________________________________________________
+[root@localhost ~]# cat /proc/mdstat
+Personalities : [raid6] [raid5] [raid4] 
+md0 : active raid5 sde1[3] sdd1[0] sdd2[1]
+      3903488 blocks super 1.2 level 5, 512k chunk, algorithm 2 [3/3] [UUU]
+      
+unused devices: <none>
+
+_________________________________________________________________
+Fail a device in the group:
+
+mdadm /dev/md0 -f /dev/sbdb1
+
+Show the status:
+
+[root@localhost ~]# mdadm -D /dev/md0
+/dev/md0:
+        Version : 1.2
+  Creation Time : Mon Jun 15 17:03:00 2015
+     Raid Level : raid5
+     Array Size : 3903488 (3.72 GiB 4.00 GB)
+  Used Dev Size : 1951744 (1906.32 MiB 1998.59 MB)
+   Raid Devices : 3
+  Total Devices : 3
+    Persistence : Superblock is persistent
+
+    Update Time : Mon Jun 15 17:31:31 2015
+          State : clean, degraded 
+ Active Devices : 2
+Working Devices : 2
+ Failed Devices : 1
+  Spare Devices : 0
+
+         Layout : left-symmetric
+     Chunk Size : 512K
+
+           Name : localhost.localdomain:0  (local to host localhost.localdomain)
+           UUID : 855daf19:12025a2e:b22f4263:b673e5a3
+         Events : 20
+
+    Number   Major   Minor   RaidDevice State
+       0       8       49        0      active sync   /dev/sdd1
+       1       8       50        1      active sync   /dev/sdd2
+       4       0        0        4      removed
+
+       3       8       65        -      faulty   /dev/sde1
+
+_________________________________________________________________
+Remove disk from array:
+
+[root@localhost ~]# mdadm /dev/md0 -r /dev/sde1
+mdadm: hot removed /dev/sde1 from /dev/md0
+
+See the status:
+
+    Number   Major   Minor   RaidDevice State
+       0       8       49        0      active sync   /dev/sdd1
+       1       8       50        1      active sync   /dev/sdd2
+       4       0        0        4      removed
+
+_________________________________________________________________
+Add a new disk:
+
+mdadm /dev/md0 -a /dev/sdb1
+
+Stop the array:
+
+mdadm -Sv /dev/md0
+
+_________________________________________________________________
+Remove RAID array:
+
+mdadm -remove /dev/md0
+
+
+Then remove partitions:
+
+pvremove /dev/sdb1
+
+*** Must creat /boot on RAID 1
