@@ -1,0 +1,141 @@
+====================================================================================
+******************************* 	KERNEL 		  **********************************
+====================================================================================
+
+LEGEND
+
+_____   = new command
+
+///// 	= config files
+
+-----   = notes
+
+------------------------------------------------------------------------------------
+
+
+/boot Place where the kernel and boot files are kept
+
+/proc Current hardware configuration and status
+
+/usr/src Source code of the kernel
+
+/lib/modules Kernel modules
+
+
+___________________________________________
+>> lsmod
+
+[ec2-user@ip-172-31-19-210 ~]$ lsmod
+Module                  Size  Used by
+isofs                  39844  0 
+intel_rapl             18773  0 
+
+
+___________________________________________
+
+
+>> modinfo
+
+[ec2-user@ip-172-31-19-210 ~]$ modinfo crc32c_intel
+filename:       /lib/modules/3.10.0-327.3.1.el7.x86_64/kernel/arch/x86/crypto/crc32c-intel.ko
+alias:          crypto-crc32c-intel
+alias:          crc32c-intel
+alias:          crypto-crc32c
+alias:          crc32c
+license:        GPL
+description:    CRC32c (Castagnoli) optimization using Intel Hardware.
+author:         Austin Zhang <austin.zhang@intel.com>, Kent Liu <kent.liu@intel.com>
+rhelversion:    7.2
+srcversion:     79DB463EA3CDD1F665FC470
+alias:          x86cpu:vendor:*:family:*:model:*:feature:*0094*
+depends:        
+intree:         Y
+vermagic:       3.10.0-327.3.1.el7.x86_64 SMP mod_unload modversions 
+signer:         Red Hat Enterprise Linux kernel signing key
+sig_key:        A6:69:AC:DE:E2:7B:2A:F1:04:DD:02:94:5C:2E:68:D0:95:F2:69:D0
+sig_hashalgo:   sha256
+
+_____________________________________________
+
+[ec2-user@ip-172-31-19-210 ~]$ modinfo xfs
+filename:       /lib/modules/3.10.0-327.3.1.el7.x86_64/kernel/fs/xfs/xfs.ko
+license:        GPL
+description:    SGI XFS with ACLs, security attributes, no debug enabled
+author:         Silicon Graphics, Inc.
+alias:          fs-xfs
+rhelversion:    7.2
+srcversion:     978077FBDF054363971A9EE
+depends:        libcrc32c
+intree:         Y
+vermagic:       3.10.0-327.3.1.el7.x86_64 SMP mod_unload modversions 
+signer:         Red Hat Enterprise Linux kernel signing key
+sig_key:        A6:69:AC:DE:E2:7B:2A:F1:04:DD:02:94:5C:2E:68:D0:95:F2:69:D0
+sig_hashalgo:   sha256
+
+
+______________________________________________
+
+yum info kernel
+
+Name        : kernel
+Arch        : x86_64
+Version     : 3.10.0
+Release     : 327.3.1.el7
+Size        : 136 M
+Repo        : installed
+From repo   : rhui-REGION-rhel-server-releases
+Summary     : The Linux kernel
+URL         : http://www.kernel.org/
+License     : GPLv2
+Description : The kernel package contains the Linux kernel (vmlinuz), the core of any
+            : Linux operating system.  The kernel handles the basic functions
+            : of the operating system: memory allocation, process allocation, device
+            : input and output, etc.
+
+______________________________________________
+
+If you see an available update for a kernel RPM, the temptation is to run the:
+rpm -U newkernel command
+
+DON'T DO IT KNUCKLEHEAD!
+
+Install kernel alongside new kernel:
+
+rpm -ivh newkernel
+
+or
+
+yum install kernel
+
+---------------------------------------------------------------------------------
+/boot/grub/grub.conf
+
+'default=0' = load updated kernel next boot
+
+If you encounter any issues, you can reboot again and choose the older kernel
+at the GRUB boot menu to fix any issues you’re having.
+
+/////////////////////////////////////////////////////////////////////////////////
+[ec2-user@ip-172-31-19-210 ~]$ cat /boot/grub/grub.conf
+default=0
+timeout=0
+
+
+title Red Hat Enterprise Linux Server (3.10.0-327.3.1.el7.x86_64) 7.2 (Maipo)
+	root (hd0)
+	kernel /boot/vmlinuz-3.10.0-327.3.1.el7.x86_64 ro root=UUID=6785eb86-c596-4229-85fb-4d30c848c6e8 console=hvc0 LANG=en_US.UTF-8
+	initrd /boot/initramfs-3.10.0-327.3.1.el7.x86_64.img
+title Red Hat Enterprise Linux Server (3.10.0-327.el7.x86_64) 7.2 (Maipo)
+	root (hd0)
+	kernel /boot/vmlinuz-3.10.0-327.el7.x86_64 ro root=UUID=6785eb86-c596-4229-85fb-4d30c848c6e8 console=hvc0 LANG=en_US.UTF-8
+	initrd /boot/initramfs-3.10.0-327.el7.x86_64.img
+title Red Hat Enterprise Linux 7 (3.10.0-229.el7.x86_64)
+	root (hd0)
+	kernel /boot/vmlinuz-3.10.0-229.el7.x86_64 ro root=UUID=6785eb86-c596-4229-85fb-4d30c848c6e8 console=hvc0 LANG=en_US.UTF-8
+	initrd /boot/initramfs-3.10.0-229.el7.x86_64.img
+/////////////////////////////////////////////////////////////////////////////////
+
+TUNING THE SYSTEM WITH /PROC/SYS
+
+
+/prod/sys
