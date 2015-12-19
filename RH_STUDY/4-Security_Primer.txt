@@ -1,0 +1,88 @@
+====================================================================================
+***********************************  SELINUX    ************************************
+====================================================================================
+
+Directive SELINUX = Enforcing, permissive, disabled
+
+Directive SELINUXTYPE = targeted, mls
+
+////////////////////////////////////////////////////////////////
+etc/selinux/config
+////////////////////////////////////////////////////////////////
+
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+SELINUX=enforcing
+# SELINUXTYPE= can take one of three two values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected.
+#     mls - Multi Level Security protection.
+SELINUXTYPE=targeted
+////////////////////////////////////////////////////////////////
+
+---------------------------------
+
+FILE contexts: subjects, objects, and actions. 
+
+a SUBJECT is a process, such as a command in action, or an application such as the Apache web server in operation.
+
+An OBJECT is a file. An action is what may be done by the subject to the object.
+For example, the Apache web server process can take objects such as web pages and display them for the clients of the world to see. 
+
+That ACTION is normally allowed in the RHEL 6 implementation of SELinux, as long as the object files have appropriate SELinux contexts.
+
+---------------------------------
+
+[root@localhost ~]# ls -Z
+-rw-------. root root system_u:object_r:admin_home_t:s0 anaconda-ks.cfg
+
+Default /var/ftp dir:
+
+[root@localhost ~]# ls -Z /var | grep ftp
+drwxr-xr-x. root root unconfined_u:object_r:public_content_t:s0 ftp
+
+Change context *chcon:
+
+[root@localhost ~]# chcon -R -u system_u -t public_content_rw_t /var/ftp
+
+[root@localhost ~]# ls -Z /var | grep ftp
+drwxr-xr-x. root root system_u:object_r:public_content_rw_t:s0 ftp
+
+Default contenxts in /etc/selinux/targeted/contexts/files/file_contexts.
+
+////////////////////////////////////////////////////////////////
+/etc/selinux/targeted/contexts/files/file_contexts
+////////////////////////////////////////////////////////////////
+/.*     system_u:object_r:default_t:s0
+/[^/]+  --      system_u:object_r:etc_runtime_t:s0
+/a?quota\.(user|group)  --      system_u:object_r:quota_db_t:s0
+/nsr(/.*)?      system_u:object_r:var_t:s0
+/sys(/.*)?      system_u:object_r:sysfs_t:s0
+/xen(/.*)?      system_u:object_r:xen_image_t:s0
+/mnt(/[^/]*)?   -l      system_u:object_r:mnt_t:s0
+/mnt(/[^/]*)?   -d      system_u:object_r:mnt_t:s0
+/bin/.* system_u:object_r:bin_t:s0
+/dev/.* system_u:object_r:device_t:s0
+/opt/.* system_u:object_r:usr_t:s0
+.
+.
+/var/.* system_u:object_r:var_t:s0
+////////////////////////////////////////////////////////////////
+
+*restorecon 
+
+-F = force the restore
+
+This will apply the defaults in the file about
+
+restorecon -F /var/ftp
+
+[root@localhost ~]# ls -Z /var | grep ftp
+drwxr-xr-x. root root system_u:object_r:public_content_t:s0 ftp
+
+
+
+
