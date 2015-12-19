@@ -432,6 +432,9 @@ mdadm: array /dev/md0 started.
 _________________________________________________________________
 Created successfully:
 
+-D, --detail
+              Print details of one or more md devices.
+
 [root@localhost ~]# mdadm -D /dev/md0
 /dev/md0:
         Version : 1.2
@@ -462,9 +465,9 @@ Working Devices : 3
        1       8       50        1      active sync   /dev/sdd2
        3       8       65        2      active sync   /dev/sde1
 
-Check status
 
-_________________________________________________________________
+Check status:
+________________________________________________________________
 [root@localhost ~]# cat /proc/mdstat
 Personalities : [raid6] [raid5] [raid4] 
 md0 : active raid5 sde1[3] sdd1[0] sdd2[1]
