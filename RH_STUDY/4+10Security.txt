@@ -1,0 +1,239 @@
+====================================================================================
+***********************************  ACLS   ****************************************
+====================================================================================
+
+
+[root@localhost html]# getfacl /home/nickschofield/.viminfo
+getfacl: Removing leading '/' from absolute path names
+# file: home/nickschofield/.viminfo
+# owner: nickschofield
+# group: nickschofield
+user::rw-
+group::---
+other::---
+
+
+====================================================================================
+**********************************  FIREWALLD    ***********************************
+====================================================================================
+
+Open port 80:
+
+*firewall-cmd
+
+[root@localhost html]#  firewall-cmd --permanent --zone=public --add-port=80/tcp
+success
+[root@localhost html]# firewall-cmd --reload
+success
+
+OR firewall-cmd --permanent --zone=public --add-service=http
+
+
+[root@localhost html]# firewall-cmd --list-all
+public (default, active)
+  interfaces: enp0s3
+  sources:
+  services: dhcpv6-client ssh
+  ports:
+  masquerade: no
+  forward-ports:
+  icmp-blocks:
+  rich rules:
+
+---------------------------------
+
+Set up IP forwarding:
+
+net.ipv4.ip_forward=1
+
+
+
+====================================================================================
+***********************************  SELINUX    ************************************
+====================================================================================
+
+Directive SELINUX = Enforcing, permissive, disabled
+
+Directive SELINUXTYPE = targeted, mls
+
+FILE contexts: subjects, objects, and actions. 
+
+a SUBJECT is a process, such as a command in action, or an application such as the Apache web server in operation.
+
+An OBJECT is a file. An action is what may be done by the subject to the object.
+For example, the Apache web server process can take objects such as web pages and display them for the clients of the world to see. 
+
+That ACTION is normally allowed in the RHEL 6 implementation of SELinux, as long as the object files have appropriate SELinux contexts.
+
+////////////////////////////////////////////////////////////////
+/etc/selinux/config
+////////////////////////////////////////////////////////////////
+
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+SELINUX=enforcing
+# SELINUXTYPE= can take one of three two values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected.
+#     mls - Multi Level Security protection.
+SELINUXTYPE=targeted
+////////////////////////////////////////////////////////////////
+
+*sestatus
+---------------------------------
+[root@localhost ~]# sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Max kernel policy version:      28
+
+*semanage
+---------------------------------
+[root@localhost ~]# semanage login -l
+
+Login Name           SELinux User         MLS/MCS Range        Service
+
+__default__          unconfined_u         s0-s0:c0.c1023       *
+root                 unconfined_u         s0-s0:c0.c1023       *
+system_u             system_u             s0-s0:c0.c1023       *
+
+
+** Regular user has same priviledges as root user:
+
+[root@localhost ~]# id -Z
+unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+[nickschofield@localhost ~]$ id -Z
+unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+
+---------------------------------
+
+[root@localhost ~]# ls -Z
+-rw-------. root root system_u:object_r:admin_home_t:s0 anaconda-ks.cfg
+
+Default /var/ftp dir:
+
+[root@localhost ~]# ls -Z /var | grep ftp
+drwxr-xr-x. root root unconfined_u:object_r:public_content_t:s0 ftp
+
+Change context *chcon:
+
+[root@localhost ~]# chcon -R -u system_u -t public_content_rw_t /var/ftp
+
+[root@localhost ~]# ls -Z /var | grep ftp
+drwxr-xr-x. root root system_u:object_r:public_content_rw_t:s0 ftp
+
+Default contenxts in /etc/selinux/targeted/contexts/files/file_contexts.
+
+Use ftp folder as a reference:
+
+chcon -R --reference /var/ftp /var/ftp
+
+////////////////////////////////////////////////////////////////
+/etc/selinux/targeted/contexts/files/file_contexts
+////////////////////////////////////////////////////////////////
+/.*     system_u:object_r:default_t:s0
+/[^/]+  --      system_u:object_r:etc_runtime_t:s0
+/a?quota\.(user|group)  --      system_u:object_r:quota_db_t:s0
+/nsr(/.*)?      system_u:object_r:var_t:s0
+/sys(/.*)?      system_u:object_r:sysfs_t:s0
+/xen(/.*)?      system_u:object_r:xen_image_t:s0
+/mnt(/[^/]*)?   -l      system_u:object_r:mnt_t:s0
+/mnt(/[^/]*)?   -d      system_u:object_r:mnt_t:s0
+/bin/.* system_u:object_r:bin_t:s0
+/dev/.* system_u:object_r:device_t:s0
+/opt/.* system_u:object_r:usr_t:s0
+.
+.
+/var/.* system_u:object_r:var_t:s0
+/srv	system_u:object_r:var_t:s0
+////////////////////////////////////////////////////////////////
+
+*restorecon 
+
+-F = force the restore
+
+This will apply the defaults in the file about
+
+restorecon -F /var/ftp
+
+[root@localhost ~]# ls -Z /var | grep ftp
+drwxr-xr-x. root root system_u:object_r:public_content_t:s0 ftp
+
+---------------------------------
+User roles:
+
+guest_u
+No GUI, no networking, no access to the su or sudo commands
+xguest_u
+GUI, networking only via the Firefox web browser
+user_u
+GUI and networking available
+staff_u
+GUI, networking, and the sudo command available
+unconfined_u Full system access
+
+=================================================================================
+BOOLEANS
+
+Query it - user can run scripts in their home directory:
+
+[root@localhost selinux]# getsebool allow_user_exec_content
+user_exec_content --> on
+
+---------------------------------
+
+BOOLEAN DIRECTORY
+
+Switched on/off with 1 or 0. 
+
+/sys/fs/selinux/booleans/
+
+e.g.
+////////////////////////////////////////////////////////////////
+[root@localhost ~]# cat /sys/fs/selinux/booleans/docker_connect_any
+0 0
+////////////////////////////////////////////////////////////////
+
+=================================================================================
+AUDITING
+
+Gives a breakdown of SE violations:
+
+sealeart -a /var/log/audit/audit.log
+
+Any sudo violations:
+
+ausearch -m avc -c sudo
+
+pg 45
+---------------------------------
+
++++++++++++++
+EXERCISE 4.3
++++++++++++++
+
+Add user selinux to staff_u
+
+semanage login -l -a -s staff_u selinux
+
+[root@localhost html]# semanage login -l
+
+Login Name           SELinux User         MLS/MCS Range        Service
+
+__default__          unconfined_u         s0-s0:c0.c1023       *
+root                 unconfined_u         s0-s0:c0.c1023       *
+selinux              staff_u              s0-s0:c0.c1023       *
+system_u             system_u             s0-s0:c0.c1023       *
+
+Bye:
+
+semanage login -d selinux
+
