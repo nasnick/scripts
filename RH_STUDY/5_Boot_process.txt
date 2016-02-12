@@ -1,0 +1,17 @@
+
+====================================================================================
+*********************************** BOOT PROCESS ***********************************
+====================================================================================
+1/ Powered up
+
+2/ BIOS/ UEFI starts
+
+3/ BIOS/ UEFI performs POST
+
+4/ BIOS/ UEFI looks for attached devices
+
+5/ BIOS/ UEFI passes control to MBR of boot device (first hard drive)
+
+6/ 1st stage of GRUB bootloader copied to MBR - acts as pointer to other info from GRUB menu?
+
+
