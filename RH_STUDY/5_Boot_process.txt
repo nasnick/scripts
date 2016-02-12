@@ -15,3 +15,26 @@
 6/ 1st stage of GRUB bootloader copied to MBR - acts as pointer to other info from GRUB menu?
 
 
+
+
+////////////////////////////////////////////////////////////////
+GRUB CONFIGURATION FILE
+////////////////////////////////////////////////////////////////
+[root@ip-172-31-19-210 ~]# cat /boot/grub/grub.conf 
+default=0
+timeout=0
+
+
+title Red Hat Enterprise Linux Server (3.10.0-327.3.1.el7.x86_64) 7.2 (Maipo)
+	root (hd0)
+	kernel /boot/vmlinuz-3.10.0-327.3.1.el7.x86_64 ro root=UUID=6785eb86-c596-4229-85fb-4d30c848c6e8 console=hvc0 LANG=en_US.UTF-8
+	initrd /boot/initramfs-3.10.0-327.3.1.el7.x86_64.img
+title Red Hat Enterprise Linux Server (3.10.0-327.el7.x86_64) 7.2 (Maipo)
+	root (hd0)
+	kernel /boot/vmlinuz-3.10.0-327.el7.x86_64 ro root=UUID=6785eb86-c596-4229-85fb-4d30c848c6e8 console=hvc0 LANG=en_US.UTF-8
+	initrd /boot/initramfs-3.10.0-327.el7.x86_64.img
+title Red Hat Enterprise Linux 7 (3.10.0-229.el7.x86_64)
+	root (hd0)
+	kernel /boot/vmlinuz-3.10.0-229.el7.x86_64 ro root=UUID=6785eb86-c596-4229-85fb-4d30c848c6e8 console=hvc0 LANG=en_US.UTF-8
+	initrd /boot/initramfs-3.10.0-229.el7.x86_64.img
+////////////////////////////////////////////////////////////////
