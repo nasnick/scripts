@@ -28,7 +28,7 @@ In red hat there are 5 keys in /etc/pki/rpm-gpg:
 
 GPG Key                             Description
 ----------------------------------|-----------------------------------------
-RPM-GPG-KEY-redhat-beta             Packages built for the RHEL 6 beta
+RPM-GPG-KEY-redhat-beta             Packages built for the RHEL 6 betan
 RPM-GPG-KEY-redhat-legacy-former    Packages for pre–November 2006 releases
                                     (and updates)
 RPM-GPG-KEY-redhat-legacy-release   Packages for post–November 2006 releases
