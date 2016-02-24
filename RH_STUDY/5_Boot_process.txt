@@ -28,7 +28,7 @@ Boot Process
 6/ 1st stage of GRUB bootloader copied to MBR - acts as pointer to other info from GRUB menu?
 
 
-
+Grub config below different to that in the book but am guessing that's a RHEL6 vs RHEL7 thing.
 
 ////////////////////////////////////////////////////////////////
 GRUB CONFIGURATION FILE
@@ -51,3 +51,9 @@ title Red Hat Enterprise Linux 7 (3.10.0-229.el7.x86_64)
 	kernel /boot/vmlinuz-3.10.0-229.el7.x86_64 ro root=UUID=6785eb86-c596-4229-85fb-4d30c848c6e8 console=hvc0 LANG=en_US.UTF-8
 	initrd /boot/initramfs-3.10.0-229.el7.x86_64.img
 ////////////////////////////////////////////////////////////////
+
+Will see this if grub has been password protected:
+
+password --md5 $1$hfBhb8zA$sYrw4B1VzrrpPHpDtyhb.
+
+
