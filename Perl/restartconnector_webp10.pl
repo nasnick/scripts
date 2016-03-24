@@ -65,19 +65,19 @@ sub startConnector {
     my $count = 0;
     logMessage("Before starting");
     logMessage(system("$strPath/con_start.sh"));
+    `$strPath/con_start.sh`;
     logMessage("After starting");
     sleep 5;
     logMessage("Before Checking");
     $strCheck = `$strPath/con_check.sh`;
     chomp($strCheck);
     logMessage($strCheck);
-    if ($strCheck =~ /is\ running/) {
+    if ($strCheck =~ /Connector\ running/) {
   return 0;
     } else {
   return 1;
     }
 }
-
 
 sub checkLogFile {
     my @errorList = getErrorList();
@@ -85,14 +85,14 @@ sub checkLogFile {
   
     # Check the list of errors in the list and compare them with the logfile  
     foreach my $errorline (@errorList) {
-	foreach my $logline (@diffLog) {
-	    if ($logline =~ /$errorline/) {
-		our $strError = $logline;
-		print STDOUT $strError;
-		logMessage("Error Found: ".$logline);
-		return 1;
-	    }
-	}  
+  foreach my $logline (@diffLog) {
+      if ($logline =~ /$errorline/) {
+    our $strError = $logline;
+    print STDOUT $strError;
+    logMessage("Error Found: ".$logline);
+    return 1;
+      }
+  }  
     }
     # If we didn't return anything in the previous loop, means no errors found 
     return 0;    
@@ -102,7 +102,7 @@ sub checkLogFile {
 sub logMessage {
     my $timestamp = `perl -MPOSIX -le 'print strftime "%F %T", localtime $^T'`;
     chomp($timestamp);
-    #print $timestamp." ".$_[0]."\n";
+    print $timestamp." ".$_[0]."\n";
 }
 
 sub getErrorList {
@@ -116,7 +116,7 @@ sub getErrorList {
 
 ## Get the difference of the log since the last time was checked
 sub getDiffLog {
-    @difference = `sudo -u root /usr/sbin/logtail $strPath/testlogfile`;
+    @difference = `sudo -u root /usr/sbin/logtail $strPath/logfile.log`;
     chomp @difference;  
     return @difference;  
 }
@@ -136,7 +136,7 @@ sub sendEmail {
  my $timestamp = `perl -MPOSIX -le 'print strftime "%F %T", localtime $^T'`;
  $to = 'nick.schofield@b2be.com';
  $from = 'unxwebp10.ecnetwork.co.nz';
- $subject = $emailSubject.$fullfile;
+ $subject = $emailSubject;
  $message = $emailMessage;
 
   open(MAIL, "|/usr/sbin/sendmail -t");
