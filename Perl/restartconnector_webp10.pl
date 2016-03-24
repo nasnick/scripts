@@ -41,6 +41,44 @@ if (checkLogFile()) {
 ## Subroutines#
 ###############
 
+sub stopConnector {
+    my $strCheck;
+    my $count = 0;
+    logMessage("Stopping Connector");
+    do {
+  `$strPath/con_stop.sh`;
+  sleep 5;
+  $strCheck = `$strPath/con_check.sh`;
+  chomp($strCheck);
+  $count++;
+  logMessage($strCheck);
+    } until ($strCheck =~ /not\ running/ || $count == 5); ## Until the connector has stopped or tried 5 times
+    if ($strCheck =~ /not\ running/) {
+  return 0;
+    } else {
+  return 1; ## Exit due to the max attempts to stop
+    }
+}
+
+sub startConnector {  
+    my $strCheck;  
+    my $count = 0;
+    logMessage("Before starting");
+    logMessage(system("$strPath/con_start.sh"));
+    logMessage("After starting");
+    sleep 5;
+    logMessage("Before Checking");
+    $strCheck = `$strPath/con_check.sh`;
+    chomp($strCheck);
+    logMessage($strCheck);
+    if ($strCheck =~ /is\ running/) {
+  return 0;
+    } else {
+  return 1;
+    }
+}
+
+
 sub checkLogFile {
     my @errorList = getErrorList();
     my @diffLog = getDiffLog();
@@ -86,8 +124,10 @@ sub getDiffLog {
 sub removeFile {
   my $line = $strError;
   ($file) = $line =~ m/\/(.*),/;
-  $fullfile = '/' . $file;
-  $message = `cat $fullfile`;
+  $fullfile = '/'.$file;
+  #Set
+  $emailSubject = 'Contents of:'.$fullfile;
+  $emailMessage = `cat $fullfile`;
   sendEmail(); 
   move($fullfile, $failedFiles);
 }
@@ -96,8 +136,8 @@ sub sendEmail {
  my $timestamp = `perl -MPOSIX -le 'print strftime "%F %T", localtime $^T'`;
  $to = 'nick.schofield@b2be.com';
  $from = 'unxwebp10.ecnetwork.co.nz';
- $subject = 'Contents of:'.$fullfile;
- #$message = $emailMessage.$timestamp;
+ $subject = $emailSubject.$fullfile;
+ $message = $emailMessage;
 
   open(MAIL, "|/usr/sbin/sendmail -t");
 
