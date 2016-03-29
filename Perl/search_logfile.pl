@@ -1,4 +1,14 @@
+#!/usr/bin/perl -w
+# Sergio Aguila
+# 9.6.2014
+# Purpose: Restart Connector if find an error in the list at the bottom of this script
 
+use File::Basename;
+
+my $strPath = "/usr/local/ecnet/Connector";
+my $strLogFile = $strPath."/connectorrestarted.log";
+
+open(STDOUT, '>>',$strLogFile) or die $!;
 
 
 sub checkLogFile {
@@ -19,6 +29,13 @@ sub checkLogFile {
     return 0;    
 }
 
+## Receive a message and pre-append the time
+sub logMessage {
+    my $timestamp = `perl -MPOSIX -le 'print strftime "%F %T", localtime $^T'`;
+    chomp($timestamp);
+    print $timestamp." ".$_[0]."\n";
+}
+
 sub getErrorList {
     my @errorList = (
 #       Add errors here
@@ -30,7 +47,7 @@ sub getErrorList {
 
 ## Get the difference of the log since the last time was checked
 sub getDiffLog {
-    @difference = `sudo -u root /usr/bin/logtail $strPath/logfile.log`;
+    @difference = `sudo -u root /usr/bin/logtail $strPath/testlogfile`;
     chomp @difference;  
     return @difference;  
 }
