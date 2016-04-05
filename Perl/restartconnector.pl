@@ -128,8 +128,6 @@ sub removeFile {
   ($file) = $line =~ m/\/(.*),/;
   $fullfile = '/'.$file;
   chomp($fullfile);
-  print $fullfile;
-  print "\n";
   #Set
   $emailSubject = 'Connector restarted on unxwebp10. Failed file ('.$fullfile.')attached';
   #$emailMessage = `cat $fullfile`;
