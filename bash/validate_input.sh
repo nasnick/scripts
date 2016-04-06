@@ -22,5 +22,3 @@ else
  echo "Input is valid."
 fi
 exit 0
-
-test
