@@ -11,17 +11,13 @@ require 'etc'
 def restore
   before_restore
   if @exit_status == 0
-     edit_backup_info
      restore_command
   else
      puts "couldn't stop postgres... exiting"
   end
   if @exit_status == 0
-     puts "restore successful"
-     change_ownership("postgres")
-     change_permissions(@seven_zero_zero)
-     create_symlink
-     start_postgres
+     puts "restore successful.. starting postgres"
+     after_restore
   else
     "Restore not successful... exiting"
     exit 1
@@ -31,7 +27,21 @@ end
 def restore_command
   system "sudo -u barman barman recover main latest /data/db/barmanrestored/"
   @exit_status = $?.exitstatus
-end 
+end
+
+def before_restore
+  stop_postgres
+  change_ownership("barman")
+  change_permissions(@seven_five_five)
+  edit_backup_info
+end
+
+def after_restore
+  change_ownership("postgres")
+  change_permissions(@seven_zero_zero)
+  create_symlink
+  start_postgres
+end
 
 def change_ownership(user)
   FileUtils.chown_R user, user, @folder
@@ -54,20 +64,9 @@ def create_symlink
   system "sudo -u postgres ln -s @folder oltp"
 end
 
-def before_restore
-  stop_postgres
-  change_ownership("barman")
-  change_permissions(@seven_five_five)
-end
-
-def after_restore
-  change_ownership("postgres")
-  start_postgres
-end
-
 def stop_postgres
-  #system "sudo -u postgres /etc/init.d/postgresql stop"
-  #@exit_status = $?.exitstatus
+  system "sudo -u postgres /etc/init.d/postgresql stop"
+  @exit_status = $?.exitstatus
   @exit_status = 0
   
 end
