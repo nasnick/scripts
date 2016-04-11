@@ -20,8 +20,10 @@ def restore
   if $exit_status == 0
      puts "[+] Restore successful.."
      after_restore
-     if $exit_status != 0
-       puts "[+] Unable to start postgres..."
+     if $exit_status == 0
+       puts "[+] Restore complete and postgres restarted"
+     else
+       puts "[+] Unable to start postgres..."  
      end
   else
     "[+] Restore not successful... exiting"
