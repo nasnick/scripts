@@ -39,3 +39,11 @@ then
   echo "build failed"
   exit 1
 fi
+
+
+
+
+Access Key ID:
+AKIAJBOOHZRTHUQB2FRA
+Secret Access Key:
+hKq3NWOhU+LGY78Pu7udzd7XWgM6J4q5eBHHAjJC
