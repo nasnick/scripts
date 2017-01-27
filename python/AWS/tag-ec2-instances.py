@@ -11,7 +11,7 @@ import json
 #     "Inspector": [{
 #        "Key" : "PenTesting1632", 
 #        "Value" : "InspectorEC2Instance"
-# 	}]
+#  }]
 #   }
 # }
 
@@ -29,22 +29,26 @@ ec2 = boto3.resource('ec2')
 mytags = config['tags']['Inspector']
 instance_ids = []
 
-def get_instance_ids():
+def get_all_instance_ids():
+   instance_ids = []
 
-      reservations = ec2.instances.all()
-      for reservation in reservations:
-	 #print(reservation.id)
-         instance_ids.append(reservation.id)
+   reservations = ec2.instances.all()
+   for reservation in reservations:
+    #print(reservation.id)
+      instance_ids.append(reservation.id)
 
-def filter_instances():
+def filter_instances(environment):
    instance_ids = []
 
    reservations = ec2.instances.filter(
-      Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
+      Filters=[{'Name': 'tag:opsworks:instance', 'Values': [environment]}])
    for reservation in reservations:
       print(reservation.id, reservation.instance_type)
+      instance_ids.append(reservation.id)
+   #print(instance_ids)
+   tag_instances(instance_ids)
 
-def tag_instances():
+def tag_instances(instance_ids):
 
       for instance in instance_ids:
          ec2.create_tags(
@@ -52,6 +56,4 @@ def tag_instances():
          Tags= mytags
          )
 
-#get_instance_ids()
-#tag_instances()
-filter_instances()
+filter_instances('*test*')
